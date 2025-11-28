@@ -71,7 +71,7 @@ scripts/
 - Node 18+ et npm
 - MySQL 8
 
-### 1️⃣ Base de données MySQL
+### 1️ Base de données MySQL
 
 Option A: Docker (recommandé)
 ```bash
@@ -89,7 +89,7 @@ GRANT ALL ON portfolio.* TO 'portfolio'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 2️⃣ Backend Laravel
+### 2 Backend Laravel
 
 ```bash
 cd backend
@@ -112,9 +112,9 @@ php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 
 # Migrations + seeders
 php artisan migrate:fresh --seed
-# ✅ Crée les tables users, projects, contacts, personal_access_tokens
-# ✅ Ajoute un admin (admin@portfolio.test / password)
-# ✅ Ajoute 3 projets de démo
+# Crée les tables users, projects, contacts, personal_access_tokens
+# Ajoute un admin (admin@portfolio.test / password)
+# Ajoute 3 projets de démo
 
 # Lancer le serveur
 php artisan serve
@@ -125,7 +125,7 @@ php artisan serve
 - http://127.0.0.1:8000/api/ping
 - http://127.0.0.1:8000/api/projects
 
-### 3️⃣ Frontend React
+### 3 Frontend React
 
 ```bash
 cd frontend
@@ -147,7 +147,7 @@ npm run build
 # => dossier dist/
 ```
 
-## 🎨 UI Frontend
+## UI Frontend
 
 ### Design
 - **Couleurs:** Gradient violet/bleu (#667eea → #764ba2)
@@ -192,7 +192,7 @@ curl -X POST http://127.0.0.1:8000/api/auth/logout \
 - **Email:** admin@portfolio.test
 - **Password:** password
 
-## 📦 Structure des modèles
+## Structure des modèles
 
 ### User
 ```php
@@ -239,7 +239,7 @@ php artisan config:clear
 php artisan route:clear
 ```
 
-## 🐳 Docker (optionnel)
+## Docker (optionnel)
 
 Si besoin d'un environnement complet (PHP + MySQL + Node):
 ```yaml
@@ -247,7 +247,7 @@ Si besoin d'un environnement complet (PHP + MySQL + Node):
 # Exemple: php:8.2-fpm, node:18, nginx
 ```
 
-## 🧪 Tests
+## Tests
 
 ```bash
 cd backend
@@ -266,7 +266,7 @@ php artisan test
 - [ ] CI/CD (GitHub Actions)
 - [ ] Déploiement (VPS/Vercel/Railway)
 
-## 🤝 Contribution
+## Contribution
 
 Projet personnel — Issam A.
 
