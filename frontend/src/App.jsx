@@ -1,28 +1,19 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import Home from "./pages/Home.jsx";
 import "./App.css";
 
-function App() {
-  const [message, setMessage] = useState("Chargement...");
-  const apiUrl = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    // Teste la connexion avec le backend Laravel
-    fetch(`${apiUrl}/ping`)
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage("❌ Impossible de joindre le backend"));
-  }, []);
-
+export default function App() {
   return (
-    <div className="App" style={{ textAlign: "center", padding: "3rem" }}>
-      <h1>Portfolio – Frontend Ready 🚀</h1>
-      <p>API URL : <code>{apiUrl}</code></p>
-      <h2>Backend dit :</h2>
-      <p style={{ fontSize: "1.2rem", color: "#42b883" }}>{message}</p>
-      <hr />
-      <p>Ce message vient de ton backend Laravel.</p>
-    </div>
+    <BrowserRouter>
+      <div className="app-shell">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
-
-export default App;
