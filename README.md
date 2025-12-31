@@ -1,6 +1,6 @@
 # Portfolio Issam
 
-Monorepo contenant le backend API (Laravel) et le frontend (React + Vite) pour le site portfolio fullstack.
+README contenant le backend API (Laravel) et le frontend (React + Vite) pour le site portfolio fullstack.
 
 ## 🏗 Architecture
 
@@ -56,6 +56,43 @@ scripts/
 - **PUT** `/api/projects/{id}` — Modifier 🔒
 - **DELETE** `/api/projects/{id}` — Supprimer 🔒
 
+### Compétences (Skills)
+- **GET** `/api/skills` — Toutes les compétences
+- **GET** `/api/skills/categories` — Liste des catégories
+- **GET** `/api/skills/category/{category}` — Par catégorie
+- **GET** `/api/skills/{id}` — Détails
+- **POST** `/api/skills` — Créer 🔒
+- **PUT** `/api/skills/{id}` — Modifier 🔒
+- **DELETE** `/api/skills/{id}` — Supprimer 🔒
+
+### Jeux (Games)
+- **GET** `/api/games` — Tous les jeux
+- **GET** `/api/games/{id}` — Détails
+- **POST** `/api/games` — Créer 🔒
+- **PUT** `/api/games/{id}` — Modifier 🔒
+- **DELETE** `/api/games/{id}` — Supprimer 🔒
+
+### Vidéos YouTube
+- **GET** `/api/youtube-videos` — Toutes les vidéos
+- **GET** `/api/youtube-videos/{id}` — Détails
+- **POST** `/api/youtube-videos` — Créer 🔒
+- **PUT** `/api/youtube-videos/{id}` — Modifier 🔒
+- **DELETE** `/api/youtube-videos/{id}` — Supprimer 🔒
+
+### Expériences
+- **GET** `/api/experiences` — Toutes les expériences
+- **GET** `/api/experiences/{id}` — Détails
+- **POST** `/api/experiences` — Créer 🔒
+- **PUT** `/api/experiences/{id}` — Modifier 🔒
+- **DELETE** `/api/experiences/{id}` — Supprimer 🔒
+
+### Formations
+- **GET** `/api/formations` — Toutes les formations
+- **GET** `/api/formations/{id}` — Détails
+- **POST** `/api/formations` — Créer 🔒
+- **PUT** `/api/formations/{id}` — Modifier 🔒
+- **DELETE** `/api/formations/{id}` — Supprimer 🔒
+
 ### Contact
 - **POST** `/api/contact` — Envoyer un message
 - **GET** `/api/contacts` — Tous les messages 🔒 (admin)
@@ -89,7 +126,7 @@ GRANT ALL ON portfolio.* TO 'portfolio'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 2 Backend Laravel
+### 2️⃣ Backend Laravel
 
 ```bash
 cd backend
@@ -104,27 +141,48 @@ composer install
 # DB_USERNAME=portfolio
 # DB_PASSWORD=portfolio
 
-# Générer la clé d'application (déjà fait si APP_KEY présent)
+# Générer la clé d'application (si nécessaire)
 php artisan key:generate
 
-# Publier la config Sanctum
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+# Créer le lien symbolique pour le storage
+php artisan storage:link
 
-# Migrations + seeders
+# Migrations + seeders (avec toutes les données)
 php artisan migrate:fresh --seed
-# Crée les tables users, projects, contacts, personal_access_tokens
+# Crée les tables : users, projects, contacts, skills, games, youtube_videos, experiences, formations
 # Ajoute un admin (admin@portfolio.test / password)
-# Ajoute 3 projets de démo
+# Ajoute projets (Arbre phylogénétique, Médiathèque, Chat C, Portfolio)
+# Ajoute 3 jeux (Autoclicker, Plateforme, Angry Birds)
+# Ajoute 3 vidéos YouTube
+# Ajoute 29 compétences dans 6 catégories
 
 # Lancer le serveur
 php artisan serve
 # => http://127.0.0.1:8000
 ```
 
-**Endpoints de test:**
-- http://127.0.0.1:8000/api/ping
-- http://127.0.0.1:8000/api/projects
+**⚠️ IMPORTANT : Placer vos images**
+️⃣ Frontend React
 
+```bash
+cd frontend
+
+# Vérifier .env
+# VITE_API_URL=http://127.0.0.1:8000/api
+
+# Installer les dépendances
+npm install
+
+# Lancer en dev
+npm run dev
+# => http://127.0.0.1:5173
+```
+
+**Pages disponibles:**
+- `/` — Accueil (Hero + Skills + About + Contact)
+- `/projects` — Tous les projets de programmation
+- `/games` — Jeux vidéo développés
+- `/youtube` — Chaîne YouTube avec vidéos
 ### 3 Frontend React
 
 ```bash
@@ -141,22 +199,31 @@ npm run dev
 # => http://127.0.0.1:5173
 ```
 
-**Build production:**
-```bash
-npm run build
-# => dossier dist/
-```
+**B🎨 UI Frontend
 
-## UI Frontend
-
-### Design
-- **Couleurs:** Gradient violet/bleu (#667eea → #764ba2)
+### Design System
+- **Couleurs:** 
+  - Primary: Gradient violet/bleu (#667eea → #764ba2)
+  - YouTube: Rouge (#FF0000) avec thème sombre
+  - Gaming: Gradient vert/bleu (#667eea → #48BB78)
 - **Typo:** Inter (Google Fonts) — poids 400 à 800
+- **Composants:** Cards avec hover effects, animations, responsive
 - **Sections:**
-  - Hero: titre + tagline + CTA
-  - Skills: 4 catégories (Frontend, Backend, DB, DevOps)
-  - About: présentation sobre
-  - Contact: card avec gradient + CTA email
+  - **Home:** Hero + Skills + About + Contact
+  - **Projects:** Grille de projets avec filtres par catégorie
+  - **Games:** Showcase des jeux avec détails techniques
+  - **YouTube:** Thème sombre style YouTube, vidéos avec stats
+
+### Navigation
+- Header sticky avec menu responsive
+- Routes : Accueil, Projets, Jeux (🎮), YouTube (📺)
+- Design adaptatif mobile-first
+
+### Animations
+- Fade-in au scroll
+- Hover effects sur cards
+- Transitions fluides
+- Loading states
 
 ### Navigation
 - Accueil (Hero + Skills + About + Contact)
