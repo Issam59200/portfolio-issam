@@ -15,14 +15,17 @@ class DatabaseSeeder extends Seeder
     {
         // Créer un utilisateur admin par défaut
         User::create([
-            'name' => 'Issam Admin',
+            'name' => 'Issam Atrari',
             'email' => 'admin@portfolio.test',
             'password' => Hash::make('password'),
         ]);
 
-        // Seeder les projets
+        // Seeder tous les contenus
         $this->call([
-            ProjectSeeder::class,
+            EnhancedProjectSeeder::class,
+            SkillSeeder::class,
+            GameSeeder::class,
+            YouTubeVideoSeeder::class,
         ]);
     }
 }
