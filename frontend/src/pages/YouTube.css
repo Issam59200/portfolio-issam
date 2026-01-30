@@ -1,12 +1,12 @@
 /* YouTube Page - Style Netflix */
 .youtube-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #141414 0%, #0A0A0A 100%);
+  background: #141414;
   color: #E5E5E5;
 }
 
 .youtube-hero {
-  background: linear-gradient(180deg, #1A1A1A 0%, #141414 100%);
+  background: #141414;
   padding: var(--spacing-2xl) 0;
   padding-top: 140px;
   border-bottom: 2px solid rgba(229, 9, 20, 0.3);

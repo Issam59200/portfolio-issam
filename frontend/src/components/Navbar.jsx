@@ -9,9 +9,16 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isYouTubePage = location.pathname === '/youtube';
+  const isProjectsPage = location.pathname === '/projects' || location.pathname.startsWith('/projects/');
+  const isGamesPage = location.pathname === '/games';
+
+  let headerClass = 'site-header';
+  if (isYouTubePage) headerClass += ' site-header-youtube';
+  else if (isProjectsPage) headerClass += ' site-header-projects';
+  else if (isGamesPage) headerClass += ' site-header-games';
 
   return (
-    <header className={`site-header ${isYouTubePage ? 'site-header-youtube' : ''}`}>
+    <header className={headerClass}>
       <nav className="nav">
         <Link to="/" className="brand">
           <span className="brand-name">Issam</span>
