@@ -3,68 +3,38 @@ import './YouTube.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Liste des shorts - il suffit de mettre les liens YouTube
-const SHORTS_LINKS = [
-  "https://youtube.com/shorts/85vAIsGyvSg",
-  "https://youtube.com/shorts/PnD2-e_4_0w?si=M_mumDJE_roIQgRI",
-  "https://youtube.com/shorts/cP7i2fN1ZQ8?si=ljeDFx-L5mMGPBHz",
-  "https://youtube.com/shorts/fHXoSIuhmEE?si=Dw5OrGCShIiwwsJH",
-  "https://youtube.com/shorts/z2WjLbv0gyY?si=gj898dtb2K8PZofl",
-  "https://youtube.com/shorts/7aKf9_G4QAU?si=8vnEknwuhae5x4ut",
-  "https://youtube.com/shorts/VcXTChFlt68?si=LauEw-JUzjz5_5X3",
-  "https://youtube.com/shorts/VcXTChFlt68?si=f4uua2-JZ7jzwfXQ",
-  "https://youtube.com/shorts/Fdep5IZE2Pk?si=3BrbjvDgJinNWX-x"
-];
-
 export default function YouTube() {
   const [videos, setVideos] = useState([]);
+  const [shorts, setShorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentShortsPage, setCurrentShortsPage] = useState(0);
-  const [shortsMetadata, setShortsMetadata] = useState({});
   
   const SHORTS_PER_PAGE = 6;
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchVideos();
-    fetchShortsMetadata();
   }, []);
 
   const fetchVideos = async () => {
     try {
       const response = await fetch(`${API_URL}/youtube-videos`);
       const data = await response.json();
-      setVideos(data);
+      
+      // Séparer les shorts des vidéos longues
+      const longVideos = data.filter(v => !v.is_short);
+      const shortVideos = data.filter(v => v.is_short).reverse(); // Inverser pour afficher les plus récents en premier
+      
+      setVideos(longVideos);
+      setShorts(shortVideos);
     } catch (error) {
       console.error('Error fetching videos:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchShortsMetadata = async () => {
-    const metadata = {};
-    
-    for (const link of SHORTS_LINKS) {
-      const videoId = extractShortId(link);
-      if (videoId) {
-        try {
-          const response = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(link)}&format=json`);
-          const data = await response.json();
-          metadata[videoId] = {
-            title: data.title,
-            author: data.author_name
-          };
-        } catch (error) {
-          console.error(`Error fetching metadata for ${videoId}:`, error);
-          metadata[videoId] = {
-            title: `Short #${videoId}`,
-            author: 'YouTube'
-          };
-        }
-      }
-    }
-    
-    setShortsMetadata(metadata);
   };
 
   const formatNumber = (num) => {
@@ -73,28 +43,11 @@ export default function YouTube() {
     return num;
   };
 
-  // Extraire l'ID d'un lien YouTube Short
-  const extractShortId = (url) => {
-    const match = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
-    return match ? match[1] : null;
-  };
-
-  // Générer les données des shorts à partir des liens
-  const shortsData = SHORTS_LINKS.map((link, index) => {
-    const videoId = extractShortId(link);
-    return {
-      id: index + 1,
-      url: link,
-      videoId: videoId,
-      thumbnail: videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null,
-    };
-  }).filter(short => short.videoId); // Garder uniquement les shorts valides
-
   // Calculer les pages
-  const totalPages = Math.ceil(shortsData.length / SHORTS_PER_PAGE);
+  const totalPages = Math.ceil(shorts.length / SHORTS_PER_PAGE);
   const startIndex = currentShortsPage * SHORTS_PER_PAGE;
   const endIndex = startIndex + SHORTS_PER_PAGE;
-  const currentShorts = shortsData.slice(startIndex, endIndex);
+  const currentShorts = shorts.slice(startIndex, endIndex);
 
   const nextShortsPage = () => {
     if (currentShortsPage < totalPages - 1) {
@@ -248,27 +201,31 @@ export default function YouTube() {
           <div className="shorts-carousel">
             <div className="shorts-track">
               {currentShorts.map((short) => {
-                const metadata = shortsMetadata[short.videoId];
-                const title = metadata?.title || `Short #${short.id}`;
-                const author = metadata?.author || 'Chargement...';
-                
                 return (
                   <a 
                     key={short.id} 
-                    href={short.url}
+                    href={short.video_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="short-card"
                   >
                     <div className="short-thumbnail">
-                      <img src={short.thumbnail} alt={title} />
+                      <img 
+                        src={short.thumbnail || `https://img.youtube.com/vi/${short.video_id}/maxresdefault.jpg`} 
+                        alt={short.title} 
+                        onError={(e) => {
+                          e.target.src = `https://img.youtube.com/vi/${short.video_id}/hqdefault.jpg`;
+                        }}
+                      />
                       <div className="short-overlay">
                         <div className="short-play-button">▶</div>
                       </div>
                     </div>
                     <div className="short-info">
-                      <h4>{title}</h4>
-                      <p>{author}</p>
+                      <h4>{short.title}</h4>
+                      {short.duration_seconds && (
+                        <p>{short.duration_seconds}s</p>
+                      )}
                     </div>
                   </a>
                 );

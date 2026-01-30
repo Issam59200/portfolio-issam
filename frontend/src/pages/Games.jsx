@@ -8,6 +8,10 @@ export default function Games() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchGames();
   }, []);
 
@@ -15,7 +19,8 @@ export default function Games() {
     try {
       const response = await fetch(`${API_URL}/games`);
       const data = await response.json();
-      setGames(data);
+      // Inverser l'ordre : Angry Birds (3) -> Plateforme (2) -> Clicker (1)
+      setGames(data.reverse());
     } catch (error) {
       console.error('Error fetching games:', error);
     } finally {
@@ -99,21 +104,6 @@ export default function Games() {
                       </a>
                     )}
                   </div>
-
-                  {game.screenshots && game.screenshots.length > 1 && (
-                    <div className="game-screenshots">
-                      {game.screenshots.slice(1, 4).map((screenshot, i) => (
-                        <img 
-                          key={i} 
-                          src={`${API_URL.replace('/api', '')}/${screenshot}`}
-                          alt={`${game.title} screenshot ${i + 1}`}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
