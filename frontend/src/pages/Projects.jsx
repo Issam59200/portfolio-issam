@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Projects.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -9,13 +10,27 @@ export default function Projects() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
+    const savedPosition = sessionStorage.getItem('projectsScrollPosition');
+    if (savedPosition) {
+      window.scrollTo(0, parseInt(savedPosition));
+      sessionStorage.removeItem('projectsScrollPosition');
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
+  useEffect(() => {
     fetchProjects();
   }, []);
 
   const fetchProjects = async () => {
     try {
       const response = await fetch(`${API_URL}/projects`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
+      console.log('Projects data:', data); // Debug
       setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -78,10 +93,16 @@ export default function Projects() {
                   <div className="project-video">
                     <video 
                       controls 
+                      preload="metadata"
+                      playsInline
                       poster={project.thumbnail ? `${API_URL.replace('/api', '')}/${project.thumbnail}` : undefined}
                       className="project-video-player"
+                      onLoadedMetadata={(e) => {
+                        // Force la génération de la miniature
+                        e.target.currentTime = 1;
+                      }}
                     >
-                      <source src={`${API_URL.replace('/api', '')}/${project.video_url}`} type="video/mp4" />
+                      <source src={`${API_URL.replace('/api', '')}/${project.video_url}#t=1`} type="video/mp4" />
                       Votre navigateur ne supporte pas la lecture vidéo.
                     </video>
                     <div className="project-overlay">
@@ -111,13 +132,16 @@ export default function Projects() {
                   <h3>{project.title}</h3>
                   <p className="project-description">{project.description}</p>
                   
-                  {project.stack && project.stack.length > 0 && (
-                    <div className="project-stack">
-                      {project.stack.map((tech, i) => (
-                        <span key={i} className="tech-tag">{tech}</span>
-                      ))}
-                    </div>
-                  )}
+                  {project.stack && (() => {
+                    const stack = typeof project.stack === 'string' ? JSON.parse(project.stack) : project.stack;
+                    return stack.length > 0 && (
+                      <div className="project-stack">
+                        {stack.map((tech, i) => (
+                          <span key={i} className="tech-tag">{tech}</span>
+                        ))}
+                      </div>
+                    );
+                  })()}
 
                   {project.role && (
                     <p className="project-role">
@@ -127,9 +151,26 @@ export default function Projects() {
                   )}
 
                   <div className="project-links">
+                    {/* Pour le Dilemme du Prisonnier (ID 10), afficher uniquement le bouton démo */}
+                    {project.id !== 10 && (
+                      <Link 
+                        to={`/projects/${project.id}`} 
+                        className="btn-learn-more"
+                        onClick={() => {
+                          sessionStorage.setItem('projectsScrollPosition', window.scrollY.toString());
+                        }}
+                      >
+                        En savoir plus
+                      </Link>
+                    )}
                     {project.demo_url && (
-                      <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="btn-demo">
-                        Voir le projet
+                      <a 
+                        href={project.demo_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className={project.id === 10 ? "btn-demo btn-demo-full" : "btn-demo"}
+                      >
+                        Démo
                       </a>
                     )}
                     {project.repository_url && (

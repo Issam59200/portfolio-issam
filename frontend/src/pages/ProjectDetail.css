@@ -1,0 +1,474 @@
+.project-detail-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.back-link:hover {
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.1);
+  transform: translateX(-4px);
+}
+
+.project-detail-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.project-detail-header h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.project-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-category,
+.project-status {
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-category {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+}
+
+.project-status {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  box-shadow: 0 2px 4px rgba(6, 95, 70, 0.2);
+}
+
+.project-dates {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.project-thumbnail-large {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.project-thumbnail-large img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.project-detail-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.project-section {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.project-section:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.project-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #111827;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.project-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 2px;
+}
+
+.project-description {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.detailed-description {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #4b5563;
+}
+
+.detailed-description h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.detailed-description h3 {
+  font-size: 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.detailed-description ul,
+.detailed-description ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.detailed-description li {
+  margin-bottom: 0.5rem;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tech-badge {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.objectives-list,
+.challenges-list,
+.achievements-list {
+  list-style: none;
+  padding: 0;
+}
+
+.objectives-list li,
+.challenges-list li,
+.achievements-list li {
+  padding: 0.75rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.objectives-list li:last-child,
+.challenges-list li:last-child,
+.achievements-list li:last-child {
+  border-bottom: none;
+}
+
+.objectives-list li::before {
+  content: '🎯';
+  position: absolute;
+  left: 0;
+}
+
+.challenges-list li::before {
+  content: '⚠️';
+  position: absolute;
+  left: 0;
+}
+
+.achievements-list li::before {
+  content: '✅';
+  position: absolute;
+  left: 0;
+}
+
+.technologies-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.tech-detail-item {
+  padding: 1rem;
+  background: #f9fafb;
+  border-left: 4px solid #3b82f6;
+  border-radius: 0.5rem;
+}
+
+.tech-detail-item strong {
+  color: #1f2937;
+}
+
+.team-info {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.screenshot-item {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.screenshot-item:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  border-color: #3b82f6;
+}
+
+.screenshot-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Styles spécifiques pour le projet Dataviz */
+.dataviz-gallery {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+}
+
+.dataviz-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.dataviz-image-item {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s ease;
+  background: white;
+  padding: 1rem;
+}
+
+.dataviz-image-item:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 32px rgba(59, 130, 246, 0.3);
+}
+
+.dataviz-image-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.75rem;
+}
+
+.detailed-content {
+  background: linear-gradient(135deg, #fefefe, #f8fafc);
+}
+
+.detailed-description {
+  font-size: 1.15rem;
+  line-height: 2;
+  color: #374151;
+}
+
+.detailed-description h2 {
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  font-weight: 700;
+  position: relative;
+  padding-left: 1.5rem;
+  border-left: 5px solid #3b82f6;
+}
+
+.detailed-description h3 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1.25rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.detailed-description p {
+  margin-bottom: 1.5rem;
+  line-height: 2;
+  text-align: justify;
+}
+
+.detailed-description ul,
+.detailed-description ol {
+  margin-left: 2.5rem;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+}
+
+.detailed-description li {
+  margin-bottom: 1rem;
+  line-height: 1.9;
+  position: relative;
+}
+
+.detailed-description li::marker {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.detailed-description strong {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.pdf-link {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: #dc2626;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.pdf-link:hover {
+  background: #b91c1c;
+}
+
+.project-links {
+  text-align: center;
+}
+
+.links-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.project-link-btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.demo-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.github-link {
+  background: #24292e;
+  color: white;
+}
+
+.project-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Vidéo de démonstration */
+.video-container {
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background: #000;
+}
+
+.project-video {
+  width: 100%;
+  max-height: 600px;
+  display: block;
+}
+
+/* Iframe pour Dilemme du Prisonnier */
+.iframe-container {
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border: 3px solid #3b82f6;
+}
+
+.project-iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  display: block;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.25rem;
+  color: #6b7280;
+}
+
+.error {
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .project-detail-container {
+    padding: 1rem;
+  }
+
+  .project-detail-header h1 {
+    font-size: 2rem;
+  }
+
+  .project-section {
+    padding: 1.5rem;
+  }
+
+  .screenshots-grid {
+    grid-template-columns: 1fr;
+  }
+}
