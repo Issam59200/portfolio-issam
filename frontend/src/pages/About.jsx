@@ -155,60 +155,40 @@ export default function About() {
         </div>
       </section>
 
-      {/* Compétences Techniques Section - Style Jeux Vidéo */}
+      {/* Compétences Techniques Section - Design compact et moderne */}
       <section className="technical-skills-section section">
         <div className="container">
           <h2 className="section-title gradient-text animate-fade-in">Compétences Techniques</h2>
-          <p className="section-subtitle">Niveau d'expérience par technologie</p>
           
           {loading ? (
             <div className="loading">Chargement des compétences...</div>
           ) : (
-            <div className="skills-categories">
-              {Object.entries(groupedSkills).map(([category, categorySkills], index) => (
+            <div className="skills-compact-grid">
+              {Object.entries(groupedSkills).map(([category, categorySkills], catIndex) => (
                 <div 
                   key={category} 
-                  className="skill-category animate-slide-right"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="skill-category-card animate-fade-in"
+                  style={{ animationDelay: `${catIndex * 0.05}s` }}
                 >
-                  <h3 className="category-title">{categoryNames[category] || category}</h3>
-                  <div className="skills-list">
+                  <div className="category-header">
+                    <h3>{categoryNames[category] || category}</h3>
+                  </div>
+                  <div className="skills-compact-list">
                     {categorySkills
                       .sort((a, b) => b.level - a.level)
-                      .map(skill => {
-                        const level = Math.floor(skill.level / 20); // 0-5 levels
-                        const currentXP = skill.level % 20; // Progress dans le level actuel
-                        return (
-                          <div key={skill.id} className="skill-item-game">
-                            <div className="skill-header-game">
-                              <span className="skill-name-game">{skill.name}</span>
-                              <span className="skill-level-badge">Lvl {level}</span>
-                            </div>
-                            <div className="xp-bar-container">
-                              <div className="xp-bar-bg">
-                                <div 
-                                  className="xp-bar-fill"
-                                  style={{ 
-                                    width: `${(currentXP / 20) * 100}%`,
-                                    animationDelay: `${index * 0.1}s`
-                                  }}
-                                >
-                                  <div className="xp-shine"></div>
-                                </div>
-                              </div>
-                              <div className="xp-text">
-                                <span>XP: {skill.level}/100</span>
-                              </div>
-                            </div>
-                            {skill.years_experience && (
-                              <div className="skill-experience">
-                                <span className="exp-icon">⏱️</span>
-                                <span>{skill.years_experience} an{skill.years_experience > 1 ? 's' : ''} d'expérience</span>
-                              </div>
-                            )}
+                      .map((skill, index) => (
+                        <div key={skill.id} className="skill-tag">
+                          <span className="skill-tag-name">{skill.name}</span>
+                          <div className="skill-tag-level">
+                            {[...Array(5)].map((_, i) => (
+                              <span 
+                                key={i}
+                                className={`level-dot ${i < Math.floor(skill.level / 20) ? 'filled' : ''}`}
+                              />
+                            ))}
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                   </div>
                 </div>
               ))}
