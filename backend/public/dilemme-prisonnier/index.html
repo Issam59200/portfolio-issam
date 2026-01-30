@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilemme du Prisonnier</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav>
+        <div>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="pages/duel.html">Duel</a></li>
+                <li><a href="pages/tournoi.html">Tournoi</a></li>
+                <li><a href="pages/evolution.html">Évolution</a></li>
+                <li><a href="pages/sandbox.html">Sandbox</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Le Dilemme du Prisonnier Itéré</h1>
+        <p>Explorez la dynamique de la coopération et de la trahison</p>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+        
+        <!-- Section Hero -->
+        <section style="margin-block: 0 60px;">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h2 style="font-size: 36px; line-height: 1.3; margin: 0 0 24px; color: var(--text);">
+                    Comprenez la <span style="background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">dynamique des jeux</span>
+                </h2>
+                <p style="font-size: 18px; color: var(--text-light); margin: 0 0 32px; line-height: 1.6;">
+                    Le Dilemme du Prisonnier Itéré est un paradoxe fascinant où la rationalité individuelle 
+                    peut mener à un résultat collectif sous-optimal. Découvrez comment différentes stratégies 
+                    coopèrent et rivalisent pour la victoire.
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="pages/duel.html"><button class="btn">Commencer un duel</button></a>
+                    <button class="btn btn-outline" onclick="document.querySelector('section:nth-of-type(2)').scrollIntoView({behavior: 'smooth'})">En savoir plus</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Explication du dilemme -->
+        <section style="background: linear-gradient(135deg, var(--surface) 0%, rgba(0, 217, 255, 0.08) 100%); border: 2px solid var(--border); border-radius: 16px; padding: 48px; margin-block: 0 60px; box-shadow: 0 4px 40px rgba(0, 217, 255, 0.15);">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <h2 style="font-size: 32px; margin: 0 0 32px; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 16px;">Le Dilemme du Prisonnier</h2>
+                
+                <p style="font-size: 16px; margin: 0 0 24px; color: var(--text); line-height: 1.8;">
+                    Deux joueurs doivent simultanément choisir entre <strong style="color: var(--success);">coopérer</strong> ou <strong style="color: var(--danger);">trahir</strong>. 
+                    Chaque choix affecte le gain des deux joueurs, créant un dilemme intéressant : 
+                    <strong style="color: var(--primary);">le meilleur résultat collectif</strong> (coopération mutuelle) est souvent moins stable que 
+                    <strong style="color: var(--accent);">l'équilibre de Nash</strong> (trahison mutuelle).
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin: 32px 0;">
+                    <div style="background: linear-gradient(135deg, var(--surface-2) 0%, rgba(6, 255, 165, 0.1) 100%); padding: 24px; border-radius: 12px; border: 2px solid var(--success); box-shadow: 0 0 15px rgba(6, 255, 165, 0.2);">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--success); margin-bottom: 8px; text-transform: uppercase;">Récompense (R)</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--success); margin-bottom: 4px; text-shadow: 0 0 10px rgba(6, 255, 165, 0.5);">3 points</div>
+                        <div style="font-size: 14px; color: var(--text-light);">Les deux coopèrent</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--surface-2) 0%, rgba(255, 190, 11, 0.1) 100%); padding: 24px; border-radius: 12px; border: 2px solid var(--accent); box-shadow: 0 0 15px rgba(255, 190, 11, 0.2);">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase;">Tentation (T)</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 4px; text-shadow: 0 0 10px rgba(255, 190, 11, 0.5);">5 points</div>
+                        <div style="font-size: 14px; color: var(--text-light);">Je trahis, il coopère</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--surface-2) 0%, rgba(255, 56, 100, 0.1) 100%); padding: 24px; border-radius: 12px; border: 2px solid var(--danger); box-shadow: 0 0 15px rgba(255, 56, 100, 0.2);">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 8px; text-transform: uppercase;">Sucker (S)</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--danger); margin-bottom: 4px; text-shadow: 0 0 10px rgba(255, 56, 100, 0.5);">0 point</div>
+                        <div style="font-size: 14px; color: var(--text-light);">Je coopère, il trahit</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--surface-2) 0%, rgba(0, 217, 255, 0.1) 100%); padding: 24px; border-radius: 12px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 8px; text-transform: uppercase;">Punition (P)</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 4px; text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);">1 point</div>
+                        <div style="font-size: 14px; color: var(--text-light);">Les deux trahissent</div>
+                    </div>
+                </div>
+
+                <p style="font-size: 14px; color: var(--text); margin: 0; padding: 16px; background: var(--surface-2); border-radius: 8px; border-left: 4px solid var(--primary); box-shadow: 0 0 15px rgba(0, 217, 255, 0.1);">
+                    <strong style="color: var(--primary);">Règle mathématique :</strong> T &gt; R &gt; P &gt; S et 2R &gt; T + S
+                </p>
+            </div>
+        </section>
+
+        <!-- Section Stratégies disponibles -->
+        <section style="margin-block: 0 60px;">
+            <h2 style="font-size: 32px; margin: 0 0 16px; color: var(--text);">8 Stratégies pour affronter le dilemme</h2>
+            <p style="font-size: 16px; color: var(--text-light); margin: 0 0 32px;">
+                Chaque stratégie a sa propre logique et comportement. Découvrez leurs forces et faiblesses :
+            </p>
+            
+            <div class="strategies-grid">
+                <div class="strategy-card">
+                    <h3 style="color: #10b981;">Toujours Coopérer</h3>
+                    <p>Coopère dans chaque situation. Pacifiste, peut être exploitée.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #ef4444;">Toujours Trahir</h3>
+                    <p>Trahit invariablement. Égoïste, empêche la coopération mutuelle.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #0ea5e9;">Tit-for-Tat</h3>
+                    <p>Coopère d'abord, puis copie l'adversaire. Réciprocité simple et efficace.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #f59e0b;">Grudger</h3>
+                    <p>Coopère jusqu'à la trahison, puis trahit toujours. Vengeance implacable.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #a855f7;">Pavlov</h3>
+                    <p>Répète si le gain est bon, change sinon. Adaptation pragmatique.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #06b6d4;">Détective</h3>
+                    <p>Teste l'adversaire, puis adapte. Équilibre entre exploration et exploitation.</p>
+                </div>
+                <div class="strategy-card">
+                    <h3 style="color: #8b5cf6;">Aléatoire</h3>
+                    <p>Choisit aléatoirement 50/50. Imprévisibilité totale.</p>
+                </div>
+                <!-- <div class="strategy-card">
+                    <h3 style="color: #14b8a6;">Copieur</h3>
+                    <p>Copie exactement l'adversaire. Miroir parfait du comportement.</p>
+                </div>-->
+            </div>
+        </section>
+
+        <!-- Section Modes de jeu -->
+        <section style="margin-block: 0 0;">
+            <h2 style="font-size: 32px; margin: 0 0 16px; color: var(--text);">Explorez le dilemme</h2>
+            <p style="font-size: 16px; color: var(--text-light); margin: 0 0 40px;">
+                4 modes différents pour explorer et comprendre la dynamique des jeux :
+            </p>
+            
+            <div class="modes-grid">
+                <div class="mode-card" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%);">
+                    <h3 style="color: #0ea5e9;">Duel 1v1</h3>
+                    <p>Affrontez deux stratégies sur plusieurs manches. Analysez les scores, observez l'historique des coups et comprenez la dynamique.</p>
+                    <a href="pages/duel.html" style="text-decoration: none;"><button class="btn" style="width: 100%; margin-top: 12px;">Commencer</button></a>
+                </div>
+
+                <div class="mode-card" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%);">
+                    <h3 style="color: #a855f7;">Tournoi</h3>
+                    <p>Compétition round-robin entre 2 à 8 stratégies. Voyez comment chaque stratégie se classe face aux autres.</p>
+                    <a href="pages/tournoi.html" style="text-decoration: none;"><button class="btn" style="width: 100%; margin-top: 12px;">Organiser</button></a>
+                </div>
+
+                <div class="mode-card" style="background: linear-gradient(135deg, rgba(20, 184, 166, 0.08) 0%, rgba(20, 184, 166, 0.04) 100%);">
+                    <h3 style="color: #14b8a6;">Sandbox</h3>
+                    <p>Expérimentez librement ! Ajoutez, supprimez et modifiez les stratégies avec des paramètres personnalisés.</p>
+                    <a href="pages/sandbox.html" style="text-decoration: none;"><button class="btn" style="width: 100%; margin-top: 12px;">Explorer</button></a>
+                </div>
+
+                <div class="mode-card" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(236, 72, 153, 0.04) 100%);">
+                    <h3 style="color: #ec4899;">Évolution</h3>
+                    <p>Simulation génétique sur plusieurs générations. Voyez comment les stratégies évoluent et s'adaptent naturellement.</p>
+                    <a href="pages/evolution.html" style="text-decoration: none;"><button class="btn" style="width: 100%; margin-top: 12px;">Simuler</button></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>Dilemme du Prisonnier - 2025</p>
+        <p>Inspiré de <a href="https://ncase.me/trust/" target="_blank">"The Evolution of Trust"</a> par Nicky Case</p>
+    </footer>
+
+    <!-- Script JavaScript (module) -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

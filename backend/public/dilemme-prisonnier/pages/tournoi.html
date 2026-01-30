@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournoi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav>
+        <div>
+            <ul>
+                <li><a href="../index.html">Accueil</a></li>
+                <li><a href="duel.html">Duel</a></li>
+                <li><a href="tournoi.html">Tournoi</a></li>
+                <li><a href="evolution.html">Évolution</a></li>
+                <li><a href="sandbox.html">Sandbox</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Mode Tournoi</h1>
+        <p>Compétition round-robin entre 2 à 8 stratégies</p>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1400px; margin-inline: auto; margin-block: 0;">
+            
+            <!-- Configuration à gauche -->
+            <div>
+            <h2>Configuration du tournoi</h2>
+            <p>Sélectionnez les stratégies et lancez une compétition round-robin</p>
+            
+            <form id="formulaire-tournoi">
+                
+                <!-- Sélection des stratégies participantes -->
+                <div class="form-section">
+                    <h3>Stratégies participantes</h3>
+                    <p style="color: var(--text-light); margin: 0 0 16px;">Sélectionnez entre 2 et 8 stratégies :</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-cooperer" value="cooperer" checked>
+                            <label for="strat-cooperer" style="margin: 0; cursor: pointer;">Toujours Coopérer</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-trahir" value="trahir" checked>
+                            <label for="strat-trahir" style="margin: 0; cursor: pointer;">Toujours Trahir</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-titfortat" value="titfortat" checked>
+                            <label for="strat-titfortat" style="margin: 0; cursor: pointer;">Tit-for-Tat</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-grudger" value="grudger" checked>
+                            <label for="strat-grudger" style="margin: 0; cursor: pointer;">Grudger</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-pavlov" value="pavlov">
+                            <label for="strat-pavlov" style="margin: 0; cursor: pointer;">Pavlov</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-detective" value="detective">
+                            <label for="strat-detective" style="margin: 0; cursor: pointer;">Détective</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-aleatoire" value="aleatoire">
+                            <label for="strat-aleatoire" style="margin: 0; cursor: pointer;">Aléatoire</label>
+                        </div>
+                        <!-- <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="strat-copieur" value="copieur">
+                            <label for="strat-copieur" style="margin: 0; cursor: pointer;">Copieur</label>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- Règles -->
+                <div class="form-section">
+                    <h3>Paramètres du tournoi</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="manches-par-match">Manches par match :</label>
+                            <input type="number" id="manches-par-match" value="150" min="1" max="200">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bruit-tournoi">Bruit (erreurs) : <span id="valeur-bruit-tournoi">0%</span></label>
+                            <input type="range" id="bruit-tournoi" min="0" max="100" value="0" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gains -->
+                <div class="form-section">
+                    <h3>Matrice des gains (Payoff)</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gain-r-tournoi">R - Récompense :</label>
+                            <input type="number" id="gain-r-tournoi" min="-50" max="50" value="3" step="0.5">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gain-t-tournoi">T - Tentation :</label>
+                            <input type="number" id="gain-t-tournoi" min="-50" max="50" value="5" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gain-p-tournoi">P - Punition :</label>
+                            <input type="number" id="gain-p-tournoi" min="-50" max="50" value="1" step="0.5">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gain-s-tournoi">S - Sucker :</label>
+                            <input type="number" id="gain-s-tournoi" min="-50" max="50" value="0" step="0.5">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="bouton-lancer-tournoi" class="btn" style="width: 100%; padding: 14px;">Lancer le tournoi</button>
+            </form>
+            </div>
+
+            <!-- Résultats à droite -->
+            <div>
+            <section id="zone-resultats-tournoi" style="display: none;">
+                <h2 style="margin-top: 0;">Résultats</h2>
+                
+                <div id="classement-final">
+                    <!-- Le classement sera affiché ici via JavaScript -->
+                </div>
+
+                <div id="tableau-matchs">
+                    <!-- Le tableau des matchs sera affiché ici -->
+                </div>
+
+                <div id="matrice-resultats">
+                    <!-- La matrice de résultats sera affichée ici -->
+                </div>
+
+                <button class="btn" onclick="window.location.href='tournoi.html'" style="width: 100%; margin-top: 20px;">Nouveau tournoi</button>
+            </section>
+
+            <div style="text-align: center; color: var(--text-light); padding: 60px 20px;" id="tournoi-empty-state">
+                <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3; color: var(--accent);">TOURNOI</div>
+                <p style="margin: 0; font-size: 16px;">Configurez un tournoi et lancez la compétition pour voir les résultats ici.</p>
+            </div>
+            </div>
+        </div>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>Dilemme du Prisonnier - 2025</p>
+    </footer>
+
+    <!-- Script JavaScript (module) -->
+    <script type="module" src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évolution</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .evolution-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .evolution-main {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .evolution-top {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+        }
+        .evolution-bottom {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        .control-panel {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+            min-height: 450px;
+            border: 1px solid var(--border);
+        }
+        .control-panel h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text);
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--surface);
+            border-color: var(--primary);
+        }
+        .info-generation {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+        }
+        .info-generation h3 {
+            margin: 0 0 6px 0;
+            color: var(--primary);
+            font-size: 14px;
+        }
+        .info-generation p {
+            margin: 4px 0;
+            color: var(--text-light);
+        }
+        .chart-section {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+        .chart-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            color: var(--text);
+        }
+        .chart-canvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-light);
+        }
+        #canvas-cercle {
+            width: 100%;
+            height: 700px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: var(--bg-light);
+            box-shadow: var(--glow-cyan), inset 0 0 50px rgba(0, 217, 255, 0.1);
+        }
+        .strategy-stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 6px;
+            background: var(--surface-2);
+            border-radius: 6px;
+            border-left: 4px solid;
+            font-size: 13px;
+        }
+        .strategy-stat .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .strategy-stat .values {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .section-explication {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            margin-top: 24px;
+        }
+        .section-explication h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .section-explication p {
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .section-explication strong {
+            color: var(--text);
+        }
+        .encart-info {
+            background: var(--surface-2);
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .btn-sandbox {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #0ea5e9;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-sandbox:hover {
+            background: #0284c7;
+        }
+        .slider-group {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .slider-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 13px;
+        }
+        .slider-group input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .slider-group .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        @media (max-width: 1024px) {
+            .evolution-top {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav>
+        <div>
+            <ul>
+                <li><a href="../index.html">Accueil</a></li>
+                <li><a href="duel.html">Duel</a></li>
+                <li><a href="tournoi.html">Tournoi</a></li>
+                <li><a href="evolution.html">Évolution</a></li>
+                <li><a href="sandbox.html">Sandbox</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Mode Évolution</h1>
+        <p>Simulation génétique sur plusieurs générations</p>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+        <div class="evolution-container">
+            <!-- Layout principal: Contrôles en haut-gauche, Distribution en haut-droit, Évolution en bas pleine largeur -->
+            <div class="evolution-main">
+                <!-- Haut: Contrôles + Distribution -->
+                <div class="evolution-top">
+                    <!-- Panneau de contrôle (gauche haut) -->
+                    <aside class="control-panel">
+                        <div>
+                            <h2>Contrôles</h2>
+                            <div class="controls">
+                                <button id="btn-start" class="btn btn-primary">▶️ Start</button>
+                                <button id="btn-stop" class="btn btn-secondary" style="display:none;">⏸️ Stop</button>
+                                <button id="btn-nouvelle-generation" class="btn btn-secondary">➡️ Prochaine génération</button>
+                                <button id="btn-reinitialiser" class="btn btn-secondary">Réinitialiser</button>
+                            </div>
+                        </div>
+
+                        <!-- Slider pour les rounds -->
+                        <div class="slider-group">
+                            <label for="slider-rounds">Rounds par match:</label>
+                            <input type="range" id="slider-rounds" min="1" max="20" value="10">
+                            <div class="range-labels">
+                                <span>1</span>
+                                <span id="valeur-rounds">10</span>
+                                <span>20</span>
+                            </div>
+                        </div>
+
+                        <!-- Info génération -->
+                        <div class="info-generation">
+                            <h3>Génération: <span id="numero-generation">0</span></h3>
+                            <p>Population: <span id="population-totale">25</span></p>
+                        </div>
+
+                        <!-- Statistiques détaillées -->
+                        <div>
+                            <h3 style="margin: 0 0 12px 0; color: var(--text); font-size: 14px;">Statistiques</h3>
+                            <div id="stats-strategies"></div>
+                        </div>
+                    </aside>
+
+                    <!-- Distribution circulaire (droite haut) -->
+                    <section class="chart-section">
+                        <h2>Distribution des stratégies</h2>
+                        <canvas id="canvas-cercle"></canvas>
+                    </section>
+                </div>
+
+                <!-- Bas: Évolution pleine largeur -->
+                <div class="evolution-bottom">
+                    <!-- Graphique d'évolution -->
+                    <section class="chart-section">
+                        <h2>Évolution des scores moyens</h2>
+                        <canvas id="graphique-scores" class="chart-canvas"></canvas>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Section explicative (pleine largeur en bas) -->
+            <section class="section-explication">
+                <h2>Comprendre l'évolution de la confiance</h2>
+                
+                <p>
+                    Commençons par un monde idéal : une population remplie de <strong>Coopérateurs</strong>, 
+                    avec un seul <strong>Traître</strong> et un <strong>Tit-for-Tat</strong>. Comme vous pouvez le constater, 
+                    Tit-for-Tat domine largement sur le long terme avec les règles actuelles !
+                </p>
+
+                <p>
+                    Mais ces résultats dépendent de nos règles : <strong>10 tours par match</strong>. 
+                    Est-ce que Tit-for-Tat gagne toujours avec 7 tours ? 5 tours ? 3 tours ?
+                </p>
+
+                <div class="encart-info">
+                    <p style="margin: 0;">
+                        <strong>Expérimentez !</strong> Modifiez le nombre de tours avec le curseur à gauche, 
+                        puis lancez la simulation pour observer ce qui se passe.
+                    </p>
+                </div>
+
+                <p>
+                    Vous découvrirez que <strong>si vous ne jouez pas assez de tours (5 ou moins), 
+                    le Traître domine complètement</strong>. Pourquoi ? Sans interactions répétées, 
+                    il n'y a pas de temps pour construire la confiance.
+                </p>
+
+                <h3>L'importance des interactions répétées</h3>
+                <p>
+                    En 1985, quand on demandait aux Américains combien d'amis proches ils avaient, 
+                    la réponse la plus courante était "trois". En 2004, c'était "zéro". 
+                    <strong>Moins il y a d'interactions répétées, plus la méfiance se répand.</strong>
+                </p>
+
+                <h3>Aller plus loin</h3>
+                <p>
+                    Vous voulez explorer d'autres paramètres comme les gains (payoffs) et voir comment 
+                    ils influencent l'évolution de la confiance ?
+                </p>
+                <p>
+                    <a href="sandbox.html" class="btn-sandbox">Découvrir le mode Sandbox</a>
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>Dilemme du Prisonnier - 2025</p>
+    </footer>
+
+    <!-- Script JavaScript (module) -->
+    <script type="module" src="../js/ui/evolution.js"></script>
+</body>
+</html>

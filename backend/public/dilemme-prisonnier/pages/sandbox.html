@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .sandbox-container {
+            display: grid;
+            grid-template-columns: 1.25fr 420px;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .arena-container {
+            position: relative;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+        #sandbox-canvas {
+            width: 100%;
+            height: 720px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            background: var(--bg-light);
+            box-shadow: inset 0 0 30px rgba(0, 217, 255, 0.1);
+        }
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 24px;
+            max-height: calc(100vh - 48px);
+            overflow: auto;
+        }
+        .control-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+        .control-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        /* Onglets */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .tab-button {
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            background: var(--surface-2);
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        .tab-panel {
+            display: none;
+            padding-top: 8px;
+        }
+        .tab-panel.active { display: block; }
+        .slider-control {
+            margin-bottom: 16px;
+        }
+        .slider-control label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        .slider-control input[type="range"] {
+            width: 100%;
+        }
+        .strategy-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            background: var(--surface-2);
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .strategy-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
+        .strategy-item .name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .strategy-item .count {
+            font-size: 18px;
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+        .strategy-item .controls {
+            display: flex;
+            gap: 4px;
+        }
+        .strategy-item button {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg-light);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .strategy-item button:hover {
+            background: var(--surface);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: var(--surface);
+            border-color: var(--primary);
+        }
+        .generation-info {
+            text-align: center;
+            padding: 12px;
+            background: var(--surface-2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        .generation-info strong {
+            font-size: 24px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav>
+        <div>
+            <ul>
+                <li><a href="../index.html">Accueil</a></li>
+                <li><a href="duel.html">Duel</a></li>
+                <li><a href="tournoi.html">Tournoi</a></li>
+                <li><a href="evolution.html">Évolution</a></li>
+                <li><a href="sandbox.html">Sandbox</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Mode Sandbox</h1>
+        <p>Expérimentez librement avec les stratégies et paramètres en temps réel</p>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+        <div class="sandbox-container">
+            <!-- Arena de visualisation -->
+            <div class="arena-container">
+                <div class="generation-info">
+                    <div>Génération <strong id="generation-number">0</strong></div>
+                    <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                        Population totale: <span id="total-population">0</span>
+                    </div>
+                </div>
+                <canvas id="sandbox-canvas"></canvas>
+            </div>
+
+            <!-- Panneau de contrôles -->
+            <div class="controls-panel">
+                <!-- Panneau unique avec onglets -->
+                <div class="control-section">
+                    <div class="tabs">
+                        <div class="tabs-header">
+                            <button id="tab-population-button" class="tab-button active" data-tab="population">Population</button>
+                            <button id="tab-gains-button" class="tab-button" data-tab="gains">Gains</button>
+                            <button id="tab-regles-button" class="tab-button" data-tab="regles">Règles</button>
+                            <button id="tab-bruit-button" class="tab-button" data-tab="bruit">Bruit</button>
+                        </div>
+                        <!-- Onglet Population -->
+                        <div class="tab-panel active" id="tab-population" aria-labelledby="tab-population-button">
+                            <div id="population-list">
+                            </div>
+                        </div>
+                        <!-- Onglet Gains (Payoffs) -->
+                        <div class="tab-panel" id="tab-gains" aria-labelledby="tab-gains-button">
+                            <div class="slider-control">
+                                <label for="input-r">R (Récompense)</label>
+                                <input type="number" id="input-r" min="-50" max="50"value="3" step="0.5" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                            </div>
+                            <div class="slider-control">
+                                <label for="input-t">T (Tentation)</label>
+                                <input type="number" id="input-t" min="-50" max="50" value="5" step="0.5" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                            </div>
+                            <div class="slider-control">
+                                <label for="input-p">P (Punition)</label>
+                                <input type="number" id="input-p" min="-50" max="50" value="1" step="0.5" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                            </div>
+                            <div class="slider-control">
+                                <label for="input-s">S (Pigeon)</label>
+                                <input type="number" id="input-s" min="-50" max="50" value="0" step="0.5" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                            </div>
+                        </div>
+                        <!-- Onglet Règles -->
+                        <div class="tab-panel" id="tab-regles" aria-labelledby="tab-regles-button">
+                            <div class="slider-control">
+                                <label>
+                                    <span>Manches par match</span>
+                                    <span id="value-rounds">10</span>
+                                </label>
+                                <input type="range" id="slider-rounds" min="1" max="50" value="10" step="1">
+                            </div>
+                            <div class="slider-control">
+                                <label>
+                                    <span>Éliminer les</span>
+                                    <span id="value-eliminate">5</span>
+                                </label>
+                                <input type="range" id="slider-eliminate" min="1" max="10" value="5" step="1">
+                                <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
+                                    derniers & reproduire les <span id="value-reproduce">5</span> premiers
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Onglet Bruit -->
+                        <div class="tab-panel" id="tab-bruit" aria-labelledby="tab-bruit-button">
+                            <div class="slider-control">
+                                <label>
+                                    <span>Bruit (probabilité d'erreur)</span>
+                                    <span id="value-noise">5%</span>
+                                </label>
+                                <input type="range" id="slider-noise" min="0" max="100" value="5" step="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="control-section">
+                    <div class="action-buttons">
+                        <button id="btn-start" class="btn-primary">▶ Démarrer</button>
+                        <button id="btn-step" class="btn-secondary">⏭ Pas</button>
+                        <button id="btn-reset" class="btn-secondary">Réinitialiser</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>Dilemme du Prisonnier - 2025</p>
+    </footer>
+
+    <!-- Script JavaScript (module) -->
+    <script type="module" src="../js/core/sandbox.js"></script>
+</body>
+</html>
