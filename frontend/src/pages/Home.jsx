@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [fallingIcons, setFallingIcons] = useState([]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -11,6 +16,24 @@ export default function Home() {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const symbols = ['x', 'o', 'i', '+', '*', '•', '◆', '■', '▲', '▼'];
+    const icons = [];
+    
+    for (let i = 0; i < 40; i++) {
+      icons.push({
+        id: i,
+        symbol: symbols[Math.floor(Math.random() * symbols.length)],
+        left: Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30,
+        delay: Math.random() * 5,
+        duration: 6 + Math.random() * 6,
+        size: 30 + Math.random() * 40,
+        opacity: 0.5 + Math.random() * 0.4
+      });
+    }
+    setFallingIcons(icons);
   }, []);
 
   const skills = [
@@ -24,6 +47,25 @@ export default function Home() {
 
   return (
     <main className="home">
+      {/* Falling Icons */}
+      <div className="falling-icons-container">
+        {fallingIcons.map(icon => (
+          <div
+            key={icon.id}
+            className="falling-icon"
+            style={{
+              left: `${icon.left}%`,
+              animationDelay: `${icon.delay}s`,
+              animationDuration: `${icon.duration}s`,
+              fontSize: `${icon.size}px`,
+              opacity: icon.opacity
+            }}
+          >
+            {icon.symbol}
+          </div>
+        ))}
+      </div>
+
       {/* Cursor glow effect */}
       <div 
         className="cursor-glow"
@@ -45,65 +87,74 @@ export default function Home() {
 
         <div className="container">
           <div className="hero-content animate-fade-in">
-            <div className="hero-badge">
-              <span className="badge-dot"></span>
-              Disponible pour vos projets
-            </div>
-            
-            <h1 className="hero-title">
-              <span className="title-line">Bonjour, je suis</span>
-              <span className="title-name gradient-text glow-text">Issam</span>
-              <span className="title-line">Développeur Full Stack</span>
-            </h1>
+            <div className="hero-main-content">
+              <div className="hero-profile-section">
+                <div className="profile-image-container">
+                  <div className="profile-glow"></div>
+                  <img 
+                    src="http://localhost:8000/storage/experiences/picture.jpeg" 
+                    alt="Issam" 
+                    className="profile-image"
+                    onError={(e) => {
+                      e.target.src = 'https://ui-avatars.com/api/?name=Issam&size=200&background=3b82f6&color=fff&bold=true';
+                    }}
+                  />
+                </div>
 
-            <p className="hero-description">
-              Passionné par le <strong>développement web moderne</strong>, je crée des applications 
-              performantes et élégantes avec <span className="tech-highlight">Laravel</span> et <span className="tech-highlight">React</span>.
-              De la conception à la mise en production, je transforme vos idées en réalité digitale.
-            </p>
+                <div className="hero-text">
+                  <div className="hero-badge">
+                    <span className="badge-dot"></span>
+                    Disponible pour vos projets
+                  </div>
+                  
+                  <h1 className="hero-title">
+                    <span className="title-line">Bonjour, je suis</span>
+                    <span className="title-name gradient-text glow-text">Issam</span>
+                    <span className="title-line">Développeur Full Stack</span>
+                  </h1>
 
-            <div className="hero-stats">
-              <div className="stat-item animate-slide-left">
-                <div className="stat-number">3+</div>
-                <div className="stat-label">Projets Réalisés</div>
+                  <p className="hero-description">
+                    Passionné par le <strong>développement web moderne</strong>, je crée des applications 
+                    performantes et élégantes avec <span className="tech-highlight">Laravel</span> et <span className="tech-highlight">React</span>.
+                    De la conception à la mise en production, je transforme vos idées en réalité digitale.
+                  </p>
+                </div>
               </div>
-              <div className="stat-item animate-slide-left" style={{ animationDelay: '0.1s' }}>
-                <div className="stat-number">6</div>
-                <div className="stat-label">Technologies</div>
-              </div>
-              <div className="stat-item animate-slide-left" style={{ animationDelay: '0.2s' }}>
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Passion</div>
-              </div>
-            </div>
 
-            <div className="hero-actions">
-              <a href="#contact" className="btn btn-primary">
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                Me Contacter
-              </a>
-              <a href="/projects" className="btn btn-secondary">
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-                  <polyline points="17 2 12 7 7 2"></polyline>
-                </svg>
-                Voir mes Projets
-              </a>
-            </div>
-          </div>
+              <div className="hero-stats">
+                <div className="stat-item animate-slide-left">
+                  <div className="stat-number">10+</div>
+                  <div className="stat-label">Projets Réalisés</div>
+                </div>
+                <div className="stat-item animate-slide-left" style={{ animationDelay: '0.1s' }}>
+                  <div className="stat-number">15+</div>
+                  <div className="stat-label">Technologies</div>
+                </div>
+                <div className="stat-item animate-slide-left" style={{ animationDelay: '0.2s' }}>
+                  <div className="stat-number">3</div>
+                  <div className="stat-label">Jeux Créés</div>
+                </div>
+                <div className="stat-item animate-slide-left" style={{ animationDelay: '0.3s' }}>
+                  <div className="stat-number">19</div>
+                  <div className="stat-label">Vidéos YouTube</div>
+                </div>
+              </div>
 
-          <div className="hero-visual animate-fade-in-scale">
-            <div className="visual-ring ring-1"></div>
-            <div className="visual-ring ring-2"></div>
-            <div className="visual-ring ring-3"></div>
-            <div className="visual-center">
-              <div className="center-icon">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                </svg>
+              <div className="hero-actions">
+                <a href="#contact" className="btn btn-primary">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  Me Contacter
+                </a>
+                <a href="/projects" className="btn btn-secondary">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                    <polyline points="17 2 12 7 7 2"></polyline>
+                  </svg>
+                  Voir mes Projets
+                </a>
               </div>
             </div>
           </div>
