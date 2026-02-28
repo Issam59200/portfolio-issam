@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run start-dilemme & vite",
+    "dev": "vite",
     "start-dilemme": "node start-dilemme-server.js",
     "build": "vite build",
     "lint": "eslint .",

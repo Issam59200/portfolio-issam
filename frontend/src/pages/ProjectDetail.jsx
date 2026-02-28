@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProjectDetail.css';
 
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+const STORAGE_URL = import.meta.env.VITE_STORAGE_URL || '';
+
 function ProjectDetail() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -15,7 +18,7 @@ function ProjectDetail() {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/projects/${id}`);
+        const response = await fetch(`${API_URL}/projects/${id}`);
         if (!response.ok) {
           throw new Error('Projet non trouvé');
         }
@@ -82,7 +85,7 @@ function ProjectDetail() {
 
       {project.thumbnail && !project.video_url && (
         <div className="project-thumbnail-large">
-          <img src={`http://localhost:8000/${project.thumbnail}`} alt={project.title} />
+          <img src={`${STORAGE_URL}/${project.thumbnail}`} alt={project.title} />
         </div>
       )}
 
@@ -109,7 +112,7 @@ function ProjectDetail() {
               {[75, 76, 77, 78, 79, 80].map((num) => (
                 <div key={num} className="dataviz-image-item">
                   <img 
-                    src={`http://localhost:8000/storage/projects/${num}.png`} 
+                    src={`${STORAGE_URL}/storage/projects/${num}.png`} 
                     alt={`Visualisation Spotify ${num}`} 
                     onError={(e) => {
                       console.error(`Erreur chargement image ${num}`);
@@ -197,7 +200,7 @@ function ProjectDetail() {
               {screenshots.map((screenshot, index) => (
                 <div key={index} className="screenshot-item">
                   <img 
-                    src={`http://localhost:8000/${screenshot}`} 
+                    src={`${STORAGE_URL}/${screenshot}`} 
                     alt={`Capture ${index + 1}`} 
                   />
                 </div>
@@ -218,7 +221,7 @@ function ProjectDetail() {
                   e.target.currentTime = 1;
                 }}
               >
-                <source src={`http://localhost:8000/${project.video_url}#t=1`} type="video/mp4" />
+                <source src={`${STORAGE_URL}/${project.video_url}#t=1`} type="video/mp4" />
                 Votre navigateur ne supporte pas la balise vidéo.
               </video>
             </div>
@@ -229,7 +232,7 @@ function ProjectDetail() {
           <section className="project-section">
             <h2>Rapport de projet</h2>
             <a 
-              href={`http://localhost:8000/${project.report_pdf}`} 
+              href={`${STORAGE_URL}/${project.report_pdf}`} 
               target="_blank" 
               rel="noopener noreferrer"
               className="pdf-link"
@@ -267,27 +270,17 @@ function ProjectDetail() {
           </section>
         )}
 
-        {/* Pour le projet Dilemme du Prisonnier, afficher l'iframe sans section Liens */}
-        {project.id === 10 && project.demo_url && (
+        {/* Pour le projet Dilemme du Prisonnier, lien vers la section intégrée */}
+        {project.id === 10 && (
           <section className="project-section">
             <h2>Démonstration Interactive</h2>
-            <p className="iframe-notice">Le jeu s'ouvre dans une fenêtre intégrée ci-dessous. Pour une meilleure expérience, vous pouvez ouvrir le jeu dans un nouvel onglet en cliquant sur le bouton ci-dessous.</p>
-            <div className="iframe-actions">
-              <a 
-                href="http://localhost:8001" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="project-link-btn demo-link"
-              >
-                🎮 Ouvrir le jeu en plein écran
-              </a>
-            </div>
-            <div className="iframe-container">
-              <iframe 
-                src="http://localhost:8001" 
-                title="Dilemme du Prisonnier"
-                className="project-iframe"
-              />
+            <p>Le Dilemme du Prisonnier est entièrement intégré dans ce portfolio. Explorez les différents modes de jeu directement ici.</p>
+            <div className="iframe-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <a href="/dilemme" className="project-link-btn demo-link">🎮 Accéder au jeu</a>
+              <a href="/dilemme/duel" className="project-link-btn">⚔️ Mode Duel</a>
+              <a href="/dilemme/tournoi" className="project-link-btn">🏆 Tournoi</a>
+              <a href="/dilemme/evolution" className="project-link-btn">🧬 Évolution</a>
+              <a href="/dilemme/sandbox" className="project-link-btn">🧪 Sandbox</a>
             </div>
           </section>
         )}

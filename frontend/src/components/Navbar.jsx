@@ -71,6 +71,13 @@ export default function Navbar() {
           >
             📺 YouTube
           </NavLink>
+          <NavLink 
+            to="/contact" 
+            className={navLinkClass}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            ✉️ Contact
+          </NavLink>
         </div>
       </nav>
     </header>

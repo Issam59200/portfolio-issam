@@ -92,7 +92,7 @@ export default function Home() {
                 <div className="profile-image-container">
                   <div className="profile-glow"></div>
                   <img 
-                    src="http://localhost:8000/storage/experiences/picture.jpeg" 
+                    src="/storage/experiences/picture.jpeg" 
                     alt="Issam" 
                     className="profile-image"
                     onError={(e) => {

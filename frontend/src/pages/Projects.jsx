@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Projects.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -163,16 +163,23 @@ export default function Projects() {
                         En savoir plus
                       </Link>
                     )}
-                    {project.demo_url && (
+                    {project.id === 10 ? (
+                      <Link 
+                        to="/dilemme" 
+                        className="btn-demo btn-demo-full"
+                      >
+                        Démo
+                      </Link>
+                    ) : project.demo_url ? (
                       <a 
                         href={project.demo_url} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className={project.id === 10 ? "btn-demo btn-demo-full" : "btn-demo"}
+                        className="btn-demo"
                       >
                         Démo
                       </a>
-                    )}
+                    ) : null}
                     {project.repository_url && (
                       <a href={project.repository_url} target="_blank" rel="noopener noreferrer" className="btn-github">
                         GitHub

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './YouTube.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function YouTube() {
   const [videos, setVideos] = useState([]);
@@ -25,8 +25,9 @@ export default function YouTube() {
       const data = await response.json();
       
       // Séparer les shorts des vidéos longues
-      const longVideos = data.filter(v => !v.is_short);
-      const shortVideos = data.filter(v => v.is_short).reverse(); // Inverser pour afficher les plus récents en premier
+      const isShort = (v) => v.is_short === 1 || v.is_short === true || v.category === 'short' || v.category === 'shorts';
+      const longVideos = data.filter(v => !isShort(v));
+      const shortVideos = data.filter(v => isShort(v)).reverse(); // Inverser pour afficher les plus récents en premier
       
       setVideos(longVideos);
       setShorts(shortVideos);

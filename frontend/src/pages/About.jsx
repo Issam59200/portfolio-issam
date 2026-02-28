@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './About.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function About() {
   const [skills, setSkills] = useState([]);
