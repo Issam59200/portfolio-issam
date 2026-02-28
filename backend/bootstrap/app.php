@@ -12,8 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Configuration Sanctum pour les SPA
-        $middleware->statefulApi();
+        // Token-based API auth – pas besoin de statefulApi / CSRF
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
