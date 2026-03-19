@@ -135,6 +135,54 @@ export default function About() {
         </div>
       </section>
 
+      {/* CV Download Section */}
+      <section className="cv-download-section section">
+        <div className="container">
+          <h2 className="section-title gradient-text animate-fade-in">Télécharger mon CV</h2>
+          <p className="cv-download-subtitle animate-fade-in">Retrouvez mes différentes versions de CV selon vos besoins</p>
+          <div className="cv-download-grid animate-fade-in">
+            <a
+              href={`${API_URL.replace('/api', '')}/storage/cv/CV-Issam-EN.pdf`}
+              download="CV-Issam-Atrari-EN.pdf"
+              className="cv-download-card"
+            >
+              <div className="cv-download-icon">📄</div>
+              <div className="cv-download-info">
+                <h3>CV Anglais</h3>
+                <p>Version complète en anglais</p>
+              </div>
+              <div className="cv-download-btn">Télécharger</div>
+            </a>
+
+            <a
+              href={`${API_URL.replace('/api', '')}/storage/cv/CV-Skills-Issam-EN.pdf`}
+              download="CV-Skills-Issam-Atrari-EN.pdf"
+              className="cv-download-card"
+            >
+              <div className="cv-download-icon">🛠️</div>
+              <div className="cv-download-info">
+                <h3>CV Compétences (EN)</h3>
+                <p>Axé sur les compétences techniques</p>
+              </div>
+              <div className="cv-download-btn">Télécharger</div>
+            </a>
+
+            <a
+              href={`${API_URL.replace('/api', '')}/storage/cv/CV-Issam-FR.pdf`}
+              download="CV-Issam-Atrari-FR.pdf"
+              className="cv-download-card"
+            >
+              <div className="cv-download-icon">🇫🇷</div>
+              <div className="cv-download-info">
+                <h3>CV Français</h3>
+                <p>Version complète en français</p>
+              </div>
+              <div className="cv-download-btn">Télécharger</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Passions Section */}
       <section className="passions-section section">
         <div className="container">
