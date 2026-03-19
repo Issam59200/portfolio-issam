@@ -25,8 +25,12 @@ export default function Contact() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || 'Erreur lors de l\'envoi');
+        let message = 'Erreur lors de l\'envoi';
+        try {
+          const data = await res.json();
+          message = data.message || message;
+        } catch {}
+        throw new Error(message);
       }
 
       setStatus('success');
@@ -100,7 +104,15 @@ export default function Contact() {
                   <span className="contact-info-icon">📧</span>
                   <div>
                     <h3>Email</h3>
-                    <p>issamatrari89@gmail.com</p>
+                    <p style={{ marginTop: '8px', fontSize: '0.85rem' }}>
+                      Ou envoyer directement à{' '}
+                      <a
+                        href="mailto:kizamesenpro@gmail.com"
+                        style={{ color: '#74B9FF', fontWeight: '600', textDecoration: 'underline' }}
+                      >
+                        kizamesenpro@gmail.com
+                      </a>
+                    </p>
                   </div>
                 </div>
                 <div className="contact-info-card">
