@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactNotification;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -22,7 +24,11 @@ class ContactController extends Controller
 
         $contact = Contact::create($validated);
 
-        // TODO: Envoyer une notification email à l'admin
+        try {
+            Mail::to('kizamesenpro@gmail.com')->send(new ContactNotification($contact));
+        } catch (\Exception $e) {
+            \Log::warning('Contact email could not be sent: ' . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Message envoyé avec succès',
