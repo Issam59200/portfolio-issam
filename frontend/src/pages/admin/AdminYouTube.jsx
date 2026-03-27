@@ -22,7 +22,7 @@ export default function AdminYouTube() {
   useEffect(() => { fetchItems(); }, []);
 
   const openAdd = () => {
-    setCurrent({ title: '', video_id: '', video_url: '', description: '', category: '', featured: false, order: 0 });
+    setCurrent({ title: '', video_id: '', video_url: '', description: '', description_en: '', category: '', featured: false, order: 0 });
     setModal('add');
   };
 
@@ -98,12 +98,20 @@ export default function AdminYouTube() {
             </div>
             <div className="admin-modal-body">
               <div className="form-group">
-                <label>Titre *</label>
+                <label>Titre (FR) *</label>
                 <input value={current.title || ''} onChange={e => setCurrent({...current, title: e.target.value})} />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>Titre (EN)</label>
+                <input value={current.title_en || ''} onChange={e => setCurrent({...current, title_en: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Description (FR)</label>
                 <textarea rows={3} value={current.description || ''} onChange={e => setCurrent({...current, description: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Description (EN)</label>
+                <textarea rows={3} value={current.description_en || ''} onChange={e => setCurrent({...current, description_en: e.target.value})} />
               </div>
               <div className="form-row">
                 <div className="form-group">
