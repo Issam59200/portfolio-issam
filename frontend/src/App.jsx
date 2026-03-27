@@ -11,6 +11,7 @@ import About from "./pages/About.jsx";
 import Login from "./pages/Login.jsx";
 import Contact from "./pages/Contact.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminLayout from "./components/AdminLayout.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -32,6 +33,7 @@ import "./App.css";
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
       <AuthProvider>
         <ScrollToTop />
         <Routes>
@@ -77,6 +79,7 @@ export default function App() {
           } />
         </Routes>
       </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
