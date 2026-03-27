@@ -2,16 +2,19 @@ import { useState, useEffect } from 'react';
 import { Tournament } from './core/tournoi.js';
 import {
   ALL_STRATEGIES,
-  STRATEGY_LABELS,
   STRATEGY_IMAGES,
   CLASS_TO_IMAGE,
-  CLASS_TO_LABEL,
 } from './constants';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
+import { useStrategyLabels } from './useStrategyLabels.js';
 
 const cheminImage = (className) => CLASS_TO_IMAGE[className] || '/agents/Normal.png';
-const nomLisible  = (className) => CLASS_TO_LABEL[className] || className;
 
 export default function TournoiPage() {
+  const { t } = useLanguage();
+  const d = t.dilemme;
+  const { STRATEGY_LABELS, CLASS_TO_LABEL } = useStrategyLabels();
+
   const [selected, setSelected] = useState(['cooperer', 'trahir', 'titfortat', 'grudger', 'detective', 'aleatoire', 'pavlov']);
   const [manches, setManches] = useState(50);
   const [bruit, setBruit] = useState(0);
@@ -20,6 +23,8 @@ export default function TournoiPage() {
   const [showMatchs, setShowMatchs] = useState(false);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const nomLisible = (className) => CLASS_TO_LABEL[className] || className;
 
   const toggleStrategy = (key) => {
     setSelected(prev =>
@@ -48,7 +53,7 @@ export default function TournoiPage() {
         <div>
           {/* Strategy checkboxes */}
           <div className="form-section">
-            <h3>🎯 Stratégies participantes</h3>
+            <h3>{d.tournoiStrategies}</h3>
             <div className="strategy-checkboxes">
               {ALL_STRATEGIES.map(key => (
                 <label key={key} className={`strategy-checkbox-item ${selected.includes(key) ? 'checked' : ''}`}>
@@ -63,43 +68,43 @@ export default function TournoiPage() {
               ))}
             </div>
             <p style={{ color: 'var(--text-light)', fontSize: 13, marginTop: 8 }}>
-              {selected.length} stratégie{selected.length > 1 ? 's' : ''} sélectionnée{selected.length > 1 ? 's' : ''}
+              {d.tournoiSelected(selected.length)}
             </p>
           </div>
 
           {/* Params */}
           <div className="form-section">
-            <h3>⚙️ Paramètres</h3>
+            <h3>{d.tournoiParams}</h3>
             <div className="form-group">
-              <label>Manches par match</label>
+              <label>{d.tournoiRounds}</label>
               <input type="number" min={5} max={500} value={manches} onChange={e => setManches(Math.max(1, +e.target.value))} />
             </div>
             <div className="form-group" style={{ marginTop: 16 }}>
-              <label>Bruit : <span className="valeur-range">{bruit}%</span></label>
+              <label>{d.tournoiNoise} <span className="valeur-range">{bruit}%</span></label>
               <input type="range" min={0} max={50} value={bruit} onChange={e => setBruit(+e.target.value)} />
             </div>
           </div>
 
           {/* Gains */}
           <div className="form-section">
-            <h3>💰 Matrice des Gains</h3>
+            <h3>{d.tournoiGains}</h3>
             <div className="form-row">
               <div className="form-group">
-                <label>R (Récompense)</label>
+                <label>{d.tournoiR}</label>
                 <input type="number" value={gains.R} onChange={e => setGains({ ...gains, R: +e.target.value })} />
               </div>
               <div className="form-group">
-                <label>T (Tentation)</label>
+                <label>{d.tournoiT}</label>
                 <input type="number" value={gains.T} onChange={e => setGains({ ...gains, T: +e.target.value })} />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>P (Punition)</label>
+                <label>{d.tournoiP}</label>
                 <input type="number" value={gains.P} onChange={e => setGains({ ...gains, P: +e.target.value })} />
               </div>
               <div className="form-group">
-                <label>S (Dupe)</label>
+                <label>{d.tournoiS}</label>
                 <input type="number" value={gains.S} onChange={e => setGains({ ...gains, S: +e.target.value })} />
               </div>
             </div>
@@ -112,7 +117,7 @@ export default function TournoiPage() {
             onClick={lancerTournoi}
             disabled={selected.length < 2}
           >
-            🏆 Lancer le Tournoi ({selected.length} stratégies)
+            {d.tournoiLaunch(selected.length)}
           </button>
         </div>
 
@@ -121,8 +126,8 @@ export default function TournoiPage() {
           {!result && (
             <div className="empty-state">
               <div className="icon">🏆</div>
-              <h3>Aucun tournoi lancé</h3>
-              <p>Sélectionnez au moins 2 stratégies et lancez le tournoi</p>
+              <h3>{d.tournoiEmptyTitle}</h3>
+              <p>{d.tournoiEmptyDesc}</p>
             </div>
           )}
 
@@ -130,15 +135,15 @@ export default function TournoiPage() {
             <>
               {/* Classement */}
               <div className="zone-resultats">
-                <h3>📊 Classement Final</h3>
+                <h3>{d.tournoiRanking}</h3>
                 <div style={{ overflowX: 'auto' }}>
                   <table className="table">
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Stratégie</th>
-                        <th>Score Total</th>
-                        <th>Moyenne</th>
+                        <th>{d.thStrategy}</th>
+                        <th>{d.thTotal}</th>
+                        <th>{d.thAvg}</th>
                         <th>V</th>
                         <th>N</th>
                         <th>D</th>
@@ -166,7 +171,7 @@ export default function TournoiPage() {
 
               {/* Matrice */}
               <div className="zone-resultats" style={{ marginTop: 24 }}>
-                <h3>🔢 Matrice des Résultats</h3>
+                <h3>{d.tournoiMatrix}</h3>
                 <div className="matrice-scroll">
                   <table>
                     <thead>
@@ -206,19 +211,19 @@ export default function TournoiPage() {
                   style={{ cursor: 'pointer' }}
                   onClick={() => setShowMatchs(!showMatchs)}
                 >
-                  {showMatchs ? '▼' : '▶'} Détails des matchs ({result.detailsMatches.length})
+                  {showMatchs ? '▼' : '▶'} {d.matchDetails(result.detailsMatches.length)}
                 </h3>
                 {showMatchs && (
                   <div style={{ overflowX: 'auto' }}>
                     <table className="table">
                       <thead>
                         <tr>
-                          <th>Match</th>
-                          <th>Stratégie A</th>
+                          <th>{d.thMatch}</th>
+                          <th>{d.thStratA}</th>
                           <th>Score A</th>
                           <th>Score B</th>
-                          <th>Stratégie B</th>
-                          <th>Résultat</th>
+                          <th>{d.thStratB}</th>
+                          <th>{d.thResult}</th>
                         </tr>
                       </thead>
                       <tbody>

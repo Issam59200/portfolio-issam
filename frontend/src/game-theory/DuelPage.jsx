@@ -2,16 +2,18 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { simulerDuel, Historique, Turn } from './core/jeu.js';
 import { Payoff } from './core/gain.js';
 import { construireStrategy } from './core/strategie.js';
-import {
-  ALL_STRATEGIES,
-  STRATEGY_LABELS,
-  STRATEGY_IMAGES,
-} from './constants';
+import { ALL_STRATEGIES, STRATEGY_IMAGES } from './constants';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
+import { useStrategyLabels } from './useStrategyLabels.js';
 
 /* ── Helpers ── */
 const cheminImage = (key) => encodeURI(STRATEGY_IMAGES[key] || '/agents/Normal.png');
 
 export default function DuelPage() {
+  const { t } = useLanguage();
+  const d = t.dilemme;
+  const { STRATEGY_LABELS } = useStrategyLabels();
+
   /* ── State ── */
   const [mode, setMode] = useState('auto');
   const [stratA, setStratA] = useState('titfortat');
@@ -20,7 +22,6 @@ export default function DuelPage() {
   const [bruit, setBruit] = useState(0);
   const [result, setResult] = useState(null);
 
-  // Human mode state
   const [humanHistory, setHumanHistory] = useState(null);
   const [humanRound, setHumanRound] = useState(0);
   const [humanPayoff] = useState(() => new Payoff());
@@ -29,6 +30,12 @@ export default function DuelPage() {
   const canvasRef = useRef(null);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const labelA = mode === 'human' ? d.humanLabelA : STRATEGY_LABELS[stratA];
+  const labelB = STRATEGY_LABELS[stratB];
+  const imgA = mode === 'human' ? '/agents/Joueur.png' : cheminImage(stratA);
+  const imgB = cheminImage(stratB);
+  const isFinished = mode === 'human' && humanHistory && humanRound >= manches;
 
   /* ── Auto duel ── */
   const lancerDuel = useCallback(() => {
@@ -57,7 +64,6 @@ export default function DuelPage() {
   const humanPlay = (action) => {
     if (!humanHistory || humanRound >= manches) return;
     const opponentStrat = construireStrategy(stratB);
-    // Feed existing history so opponent strategy can react
     const oppAction = opponentStrat.nextAction({ historique: humanHistory, me: 'B', opponent: 'A' });
     const turn = new Turn(humanRound, action, oppAction, humanPayoff);
     const newHist = Object.assign(Object.create(Object.getPrototypeOf(humanHistory)), humanHistory);
@@ -96,7 +102,6 @@ export default function DuelPage() {
     const gh = h - pad.top - pad.bottom;
     const n = cumul.A.length;
 
-    // Grid
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -111,7 +116,6 @@ export default function DuelPage() {
       ctx.fillText(Math.round(maxVal * (1 - i / 4)), pad.left - 8, y + 4);
     }
 
-    // Axes
     ctx.strokeStyle = 'rgba(255,255,255,0.15)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -134,8 +138,6 @@ export default function DuelPage() {
       });
       ctx.stroke();
       ctx.shadowBlur = 0;
-
-      // Dots
       ctx.fillStyle = color;
       points.forEach((val, i) => {
         const x = pad.left + (i / Math.max(n - 1, 1)) * gw;
@@ -149,7 +151,6 @@ export default function DuelPage() {
     drawLine(cumul.A, '#00d9ff');
     drawLine(cumul.B, '#ff006e');
 
-    // Legend
     ctx.font = 'bold 12px sans-serif';
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#00d9ff';
@@ -157,36 +158,29 @@ export default function DuelPage() {
     ctx.fillText('● ' + labelA, pad.left + 10, pad.top - 8);
     ctx.fillStyle = '#ff006e';
     ctx.fillText('● ' + labelB, pad.left + 160, pad.top - 8);
-  }, [result, humanHistory]);
+  }, [result, humanHistory, labelA, labelB]);
 
   /* ── Computed ── */
   const activeData = result || humanHistory;
-  const labelA = mode === 'human' ? 'Vous (Joueur)' : STRATEGY_LABELS[stratA];
-  const labelB = STRATEGY_LABELS[stratB];
-  const imgA = mode === 'human' ? '/agents/Joueur.png' : cheminImage(stratA);
-  const imgB = cheminImage(stratB);
-  const isFinished = mode === 'human' && humanHistory && humanRound >= manches;
 
   return (
     <>
       <div className="duel-layout">
         {/* ═══ LEFT: Configuration Panel ═══ */}
         <div id="panel-config">
-          <h3>⚙️ Configuration du Duel</h3>
+          <h3>{d.duelConfig}</h3>
 
-          {/* Mode */}
           <div className="form-group">
-            <label>Mode de jeu</label>
+            <label>{d.modeLabel}</label>
             <select value={mode} onChange={e => { setMode(e.target.value); setResult(null); setHumanHistory(null); setLastTurnSummary(null); }}>
-              <option value="auto">🤖 Auto vs Auto</option>
-              <option value="human">🎮 Humain vs IA</option>
+              <option value="auto">{d.modeAuto}</option>
+              <option value="human">{d.modeHuman}</option>
             </select>
           </div>
 
-          {/* Strategy A */}
           {mode === 'auto' && (
             <div className="form-group">
-              <label>Stratégie A</label>
+              <label>{d.stratALabel}</label>
               <select value={stratA} onChange={e => setStratA(e.target.value)}>
                 {ALL_STRATEGIES.map(k => <option key={k} value={k}>{STRATEGY_LABELS[k]}</option>)}
               </select>
@@ -197,16 +191,15 @@ export default function DuelPage() {
           )}
           {mode === 'human' && (
             <div className="form-group">
-              <label>Vous</label>
+              <label>{d.youLabel}</label>
               <div className="avatar-wrapper">
-                <img className="avatar-strategie" src="/agents/Joueur.png" alt="Joueur" />
+                <img className="avatar-strategie" src="/agents/Joueur.png" alt={d.playerAlt} />
               </div>
             </div>
           )}
 
-          {/* Strategy B */}
           <div className="form-group">
-            <label>{mode === 'human' ? 'Adversaire (IA)' : 'Stratégie B'}</label>
+            <label>{mode === 'human' ? d.opponentLabel : d.stratBLabel}</label>
             <select value={stratB} onChange={e => setStratB(e.target.value)}>
               {ALL_STRATEGIES.map(k => <option key={k} value={k}>{STRATEGY_LABELS[k]}</option>)}
             </select>
@@ -215,47 +208,43 @@ export default function DuelPage() {
             </div>
           </div>
 
-          {/* Params */}
           <div className="form-group">
-            <label>Nombre de manches</label>
+            <label>{d.roundsLabel}</label>
             <input type="number" min={1} max={200} value={manches} onChange={e => setManches(Math.max(1, +e.target.value))} />
           </div>
 
           <div className="form-group">
-            <label>Bruit : <span className="valeur-range">{bruit}%</span></label>
+            <label>{d.noiseLabel} <span className="valeur-range">{bruit}%</span></label>
             <input type="range" min={0} max={50} value={bruit} onChange={e => setBruit(+e.target.value)} />
           </div>
 
-          {/* Launch */}
           <div style={{ marginTop: '12px' }}>
             {mode === 'auto' ? (
-              <button className="btn" style={{ width: '100%' }} onClick={lancerDuel}>⚔️ Lancer le Duel</button>
+              <button className="btn" style={{ width: '100%' }} onClick={lancerDuel}>{d.launchDuelBtn}</button>
             ) : (
-              <button className="btn btn-ghost" style={{ width: '100%' }} onClick={startHuman}>🎮 Commencer la Partie</button>
+              <button className="btn btn-ghost" style={{ width: '100%' }} onClick={startHuman}>{d.startGameBtn}</button>
             )}
           </div>
         </div>
 
         {/* ═══ RIGHT: Game Zone ═══ */}
         <div>
-          {/* Empty state */}
           {!activeData && (
             <div className="empty-state">
               <div className="icon">⚔️</div>
               <h3>VS</h3>
-              <p>Configurez votre duel et lancez la simulation</p>
+              <p>{d.duelEmpty}</p>
             </div>
           )}
 
-          {/* ── Human Arena ── */}
           {mode === 'human' && humanHistory && !isFinished && (
             <div id="human-arena" className="visible" style={{ display: 'flex' }}>
-              <h3>🎮 Tour {humanRound + 1} / {manches}</h3>
+              <h3>{d.humanTurn} {humanRound + 1} / {manches}</h3>
 
               <div className="human-score-cards">
                 <div className="human-score-card player">
-                  <img src="/agents/Joueur.png" alt="Joueur" />
-                  <div className="name">Vous</div>
+                  <img src="/agents/Joueur.png" alt={d.playerAlt} />
+                  <div className="name">{d.humanYou}</div>
                   <div className="score">{humanHistory.totalA}</div>
                 </div>
                 <div className="human-score-card opponent">
@@ -266,37 +255,35 @@ export default function DuelPage() {
               </div>
 
               <div className="human-action-buttons">
-                <button className="btn btn-cooperer" onClick={() => humanPlay('C')}>🤝 Coopérer</button>
-                <button className="btn btn-trahir" onClick={() => humanPlay('T')}>🗡️ Trahir</button>
+                <button className="btn btn-cooperer" onClick={() => humanPlay('C')}>{d.cooperateBtn}</button>
+                <button className="btn btn-trahir" onClick={() => humanPlay('T')}>{d.defectBtn}</button>
               </div>
 
               {lastTurnSummary && (
                 <div className="resume-tour">
-                  <p>Vous avez <strong>{lastTurnSummary.yourAction === 'C' ? 'coopéré' : 'trahi'}</strong>, 
-                  l'adversaire a <strong>{lastTurnSummary.oppAction === 'C' ? 'coopéré' : 'trahi'}</strong>. 
-                  Gain : <strong style={{ color: 'var(--primary)' }}>+{lastTurnSummary.gainA}</strong> / <strong style={{ color: 'var(--secondary)' }}>+{lastTurnSummary.gainB}</strong></p>
+                  <p>{d.youPlayed} <strong>{lastTurnSummary.yourAction === 'C' ? d.cooperated : d.betrayed}</strong>,{' '}
+                  {d.opponentPlayed} <strong>{lastTurnSummary.oppAction === 'C' ? d.cooperated : d.betrayed}</strong>.{' '}
+                  {d.scoreLabel} <strong style={{ color: 'var(--primary)' }}>+{lastTurnSummary.gainA}</strong> / <strong style={{ color: 'var(--secondary)' }}>+{lastTurnSummary.gainB}</strong></p>
                 </div>
               )}
             </div>
           )}
 
-          {/* ── Human finished ── */}
           {isFinished && (
             <div className="zone-resultats" style={{ textAlign: 'center', marginBottom: 24 }}>
-              <h3>🏁 Partie terminée !</h3>
+              <h3>{d.gameOver}</h3>
               <p style={{ fontSize: '1.3rem', fontWeight: 700, color: humanHistory.totalA > humanHistory.totalB ? 'var(--success)' : humanHistory.totalA < humanHistory.totalB ? 'var(--danger)' : 'var(--accent)' }}>
-                {humanHistory.totalA > humanHistory.totalB ? '🎉 Vous avez gagné !' : humanHistory.totalA < humanHistory.totalB ? '😞 Vous avez perdu.' : '🤝 Match nul !'}
+                {humanHistory.totalA > humanHistory.totalB ? d.won : humanHistory.totalA < humanHistory.totalB ? d.lost : d.drawMsg}
               </p>
               <p style={{ color: 'var(--text-light)' }}>
-                Score final : <strong style={{ color: 'var(--primary)' }}>{humanHistory.totalA}</strong> — <strong style={{ color: 'var(--secondary)' }}>{humanHistory.totalB}</strong>
+                {d.finalScore} <strong style={{ color: 'var(--primary)' }}>{humanHistory.totalA}</strong> — <strong style={{ color: 'var(--secondary)' }}>{humanHistory.totalB}</strong>
               </p>
             </div>
           )}
 
-          {/* ── Auto results ── */}
           {result && (
             <div className="zone-resultats" style={{ marginBottom: 24 }}>
-              <h3>🏆 Résultat du Duel</h3>
+              <h3>{d.duelResult}</h3>
               <div className="results-avatars">
                 <div className={`result-avatar-card ${result.totalA > result.totalB ? 'winner' : result.totalA < result.totalB ? 'loser' : 'draw'}`}>
                   <img src={imgA} alt={labelA} />
@@ -313,27 +300,25 @@ export default function DuelPage() {
             </div>
           )}
 
-          {/* ── Graph ── */}
           {activeData && activeData.tours.length > 0 && (
             <div className="zone-resultats" style={{ marginBottom: 24 }}>
-              <h3>📈 Évolution des scores cumulés</h3>
+              <h3>{d.scoreGraph}</h3>
               <canvas ref={canvasRef} style={{ width: '100%', height: '300px', borderRadius: 8, background: 'var(--bg-light)', border: '1px solid var(--border)' }} />
             </div>
           )}
 
-          {/* ── History table ── */}
           {activeData && activeData.tours.length > 0 && (
             <div className="zone-resultats">
-              <h3>📋 Historique des manches</h3>
+              <h3>{d.historyTitle}</h3>
               <div style={{ overflowX: 'auto' }}>
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Tour</th>
+                      <th>{d.thRound}</th>
                       <th>{labelA}</th>
                       <th>{labelB}</th>
-                      <th>Gain A</th>
-                      <th>Gain B</th>
+                      <th>{d.thScoreA}</th>
+                      <th>{d.thScoreB}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -341,10 +326,10 @@ export default function DuelPage() {
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td style={{ color: t.actionA === 'C' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
-                          {t.actionA === 'C' ? '🤝 Coopérer' : '🗡️ Trahir'}
+                          {t.actionA === 'C' ? d.cooperateShort : d.defectShort}
                         </td>
                         <td style={{ color: t.actionB === 'C' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
-                          {t.actionB === 'C' ? '🤝 Coopérer' : '🗡️ Trahir'}
+                          {t.actionB === 'C' ? d.cooperateShort : d.defectShort}
                         </td>
                         <td style={{ fontWeight: 600 }}>+{t.gainA}</td>
                         <td style={{ fontWeight: 600 }}>+{t.gainB}</td>

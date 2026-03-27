@@ -5,9 +5,10 @@ import { construireStrategy } from './core/strategie.js';
 import {
   ALL_STRATEGIES,
   STRATEGY_IMAGES,
-  STRATEGY_LABELS,
   STRATEGY_COLORS,
 } from './constants';
+import { useStrategyLabels } from './useStrategyLabels.js';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
 
 /* ── Config ─────────────────────────────────────────── */
 const MAX_AGENTS = 30;
@@ -42,6 +43,11 @@ export default function SandboxPage() {
 
   const canvasRef = useRef(null);
   const runningRef = useRef(false);
+
+  // Ajout du hook pour les labels dynamiques
+  const { STRATEGY_LABELS } = useStrategyLabels();
+  const { t } = useLanguage();
+  const d = t.dilemme;
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
@@ -199,10 +205,10 @@ export default function SandboxPage() {
 
   /* ═══ Render ════════════════════════════════════════ */
   const TABS = [
-    { id: 'population', label: 'Population' },
-    { id: 'gains', label: 'Gains' },
-    { id: 'regles', label: 'Règles' },
-    { id: 'bruit', label: 'Bruit' },
+    { id: 'population', label: d.sandboxTabPopulation },
+    { id: 'gains', label: d.sandboxTabGains },
+    { id: 'regles', label: d.sandboxTabRules },
+    { id: 'bruit', label: d.sandboxTabNoise },
   ];
 
   return (
@@ -210,9 +216,9 @@ export default function SandboxPage() {
       {/* ═══ LEFT: Arena ═══ */}
       <div className="arena-container">
         <div className="generation-info">
-          <div>Génération <strong style={{ fontSize: 24, color: 'var(--primary)' }}>{generation}</strong></div>
+          <div>{d.sandboxGeneration} <strong style={{ fontSize: 24, color: 'var(--primary)' }}>{generation}</strong></div>
           <div style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>
-            Population totale : {totalPop}
+            {d.sandboxTotalPop} {totalPop}
           </div>
         </div>
         <canvas ref={canvasRef} id="sandbox-canvas" />
@@ -256,10 +262,10 @@ export default function SandboxPage() {
           {/* Gains tab */}
           <div className={`tab-panel${activeTab === 'gains' ? ' active' : ''}`}>
             {[
-              { k: 'R', label: 'R (Récompense)' },
-              { k: 'T', label: 'T (Tentation)' },
-              { k: 'P', label: 'P (Punition)' },
-              { k: 'S', label: 'S (Pigeon)' },
+              { k: 'R', label: d.sandboxR },
+              { k: 'T', label: d.sandboxT },
+              { k: 'P', label: d.sandboxP },
+              { k: 'S', label: d.sandboxS },
             ].map(({ k, label }) => (
               <div key={k} className="form-group" style={{ marginBottom: 16 }}>
                 <label>{label}</label>
@@ -276,19 +282,19 @@ export default function SandboxPage() {
           <div className={`tab-panel${activeTab === 'regles' ? ' active' : ''}`}>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label>
-                <span>Manches par match</span>
+                <span>{d.sandboxRoundsLabel}</span>
                 <span className="valeur-range" style={{ float: 'right' }}>{rounds}</span>
               </label>
               <input type="range" min={1} max={50} value={rounds} onChange={e => setRounds(+e.target.value)} />
             </div>
             <div className="form-group">
               <label>
-                <span>Éliminer les</span>
+                <span>{d.sandboxElimLabel}</span>
                 <span className="valeur-range" style={{ float: 'right' }}>{eliminate}</span>
               </label>
               <input type="range" min={1} max={10} value={eliminate} onChange={e => setEliminate(+e.target.value)} />
               <div style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 4 }}>
-                derniers &amp; reproduire les {eliminate} premiers
+                {typeof d.sandboxElimDesc === 'function' ? d.sandboxElimDesc(eliminate) : d.sandboxElimDesc}
               </div>
             </div>
           </div>
@@ -297,7 +303,7 @@ export default function SandboxPage() {
           <div className={`tab-panel${activeTab === 'bruit' ? ' active' : ''}`}>
             <div className="form-group">
               <label>
-                <span>Bruit (probabilité d'erreur)</span>
+                <span>{d.sandboxNoiseLabel}</span>
                 <span className="valeur-range" style={{ float: 'right' }}>{noise}%</span>
               </label>
               <input type="range" min={0} max={100} value={noise} onChange={e => setNoise(+e.target.value)} />
@@ -309,13 +315,13 @@ export default function SandboxPage() {
         <div className="control-section">
           <div className="action-buttons">
             <button className="btn" onClick={() => setRunning(r => !r)}>
-              {running ? '⏸ Pause' : '▶ Démarrer'}
+              {running ? d.sandboxPauseBtn : d.sandboxStartBtn}
             </button>
             <button className="btn btn-outline" onClick={runStep} disabled={running || totalPop < 2}>
-              ⏭ Prochaine génération
+              {d.sandboxNextBtn}
             </button>
             <button className="btn btn-ghost" onClick={resetAll}>
-              🔄 Réinitialiser
+              {d.sandboxResetBtn}
             </button>
           </div>
         </div>

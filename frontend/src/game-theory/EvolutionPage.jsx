@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { simulerDuel } from './core/jeu.js';
 import { Payoff } from './core/gain.js';
 import { construireStrategy } from './core/strategie.js';
-import { STRATEGY_IMAGES, STRATEGY_LABELS, STRATEGY_COLORS } from './constants';
+import { STRATEGY_IMAGES, STRATEGY_COLORS } from './constants';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
+import { useStrategyLabels } from './useStrategyLabels.js';
 
 /* ── Config ─────────────────────────────────────────── */
 const EVO_KEYS = ['cooperer', 'titfortat', 'trahir'];
@@ -22,6 +24,10 @@ function loadImg(key) {
    Component
    ═══════════════════════════════════════════════════════ */
 export default function EvolutionPage() {
+  const { t } = useLanguage();
+  const d = t.dilemme;
+  const { STRATEGY_LABELS } = useStrategyLabels();
+
   const [population, setPopulation] = useState({ ...INITIAL_POP });
   const [generation, setGeneration] = useState(0);
   const [historique, setHistorique] = useState([{ generation: 0, population: { ...INITIAL_POP } }]);
@@ -124,9 +130,9 @@ export default function EvolutionPage() {
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.font = '14px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(`Gén ${generation}`, cx, cy - 8);
+    ctx.fillText(`${d.generationLabel} ${generation}`, cx, cy - 8);
     ctx.fillText(`${agents.length} agents`, cx, cy + 12);
-  }, [population, generation]);
+  }, [population, generation, d]);
 
   useEffect(() => { dessinerCercle(); }, [dessinerCercle]);
 
@@ -195,12 +201,12 @@ export default function EvolutionPage() {
     ctx.fillText(String(maxPop), pad.left - 6, pad.top + 10);
     ctx.fillText('0', pad.left - 6, h - pad.bottom + 4);
     ctx.textAlign = 'center';
-    ctx.fillText('Générations', w / 2, h - 6);
+    ctx.fillText(d.evoTitle, w / 2, h - 6);
     if (historique.length > 1) {
       ctx.fillText('0', pad.left, h - pad.bottom + 14);
       ctx.fillText(String(historique.length - 1), w - pad.right, h - pad.bottom + 14);
     }
-  }, [historique]);
+  }, [historique, d]);
 
   /* ── Simulate one generation ────────────────────── */
   const simulerGeneration = useCallback(() => {
@@ -278,23 +284,23 @@ export default function EvolutionPage() {
           {/* Control panel (left) */}
           <aside className="control-panel">
             <div>
-              <h2>Contrôles</h2>
+              <h2>{d.controlsTitle}</h2>
               <div className="controls">
                 <button className="btn" onClick={() => setRunning(r => !r)}>
-                  {running ? '⏸️ Stop' : '▶️ Start'}
+                  {running ? d.stopBtn : d.startBtn2}
                 </button>
                 <button className="btn btn-outline" onClick={simulerGeneration} disabled={running}>
-                  ➡️ Prochaine génération
+                  {d.nextGenBtn}
                 </button>
                 <button className="btn btn-ghost" onClick={reset}>
-                  🔄 Réinitialiser
+                  {d.resetBtn}
                 </button>
               </div>
             </div>
 
             {/* Rounds slider */}
             <div className="slider-group">
-              <label>Rounds par match :</label>
+              <label>{d.evoRoundsLabel}</label>
               <input
                 type="range" min={1} max={20}
                 value={manchesParMatch}
@@ -309,13 +315,13 @@ export default function EvolutionPage() {
 
             {/* Generation info */}
             <div className="info-generation">
-              <h3>Génération : <span style={{ color: 'var(--primary)' }}>{generation}</span></h3>
-              <p>Population : {total}</p>
+              <h3>{d.generationLabel} <span style={{ color: 'var(--primary)' }}>{generation}</span></h3>
+              <p>{d.populationLabel} {total}</p>
             </div>
 
             {/* Strategy stats */}
             <div>
-              <h3 style={{ margin: '0 0 12px', fontSize: 14 }}>Statistiques</h3>
+              <h3 style={{ margin: '0 0 12px', fontSize: 14 }}>{d.statsTitle}</h3>
               {EVO_KEYS.map(key => (
                 <div key={key} className="strategy-stat" style={{ borderLeftColor: STRATEGY_COLORS[key] }}>
                   <span className="name">
@@ -326,7 +332,7 @@ export default function EvolutionPage() {
                     {STRATEGY_LABELS[key]}
                   </span>
                   <span className="values">
-                    Population : <strong>{population[key] || 0}</strong>
+                    {d.populationLabel} <strong>{population[key] || 0}</strong>
                   </span>
                 </div>
               ))}
@@ -335,7 +341,7 @@ export default function EvolutionPage() {
 
           {/* Circle canvas (right) */}
           <section className="chart-section">
-            <h2>Distribution des stratégies</h2>
+            <h2>{d.distTitle}</h2>
             <canvas ref={circleRef} id="canvas-cercle" />
           </section>
         </div>
@@ -343,7 +349,7 @@ export default function EvolutionPage() {
         {/* ── BOTTOM: graph ── */}
         <div className="evolution-bottom">
           <section className="chart-section">
-            <h2>Évolution des populations</h2>
+            <h2>{d.evoTitle}</h2>
             <canvas ref={graphRef} className="chart-canvas" />
           </section>
         </div>
@@ -351,47 +357,40 @@ export default function EvolutionPage() {
 
       {/* ── Explanation ── */}
       <section className="section-explication">
-        <h2>Comprendre l'évolution de la confiance</h2>
+        <h2>{d.explanationTitle}</h2>
 
         <p>
-          Commençons par un monde idéal : une population remplie de <strong>Coopérateurs</strong>,
-          avec un seul <strong>Traître</strong> et un <strong>Tit-for-Tat</strong>. Comme vous pouvez le constater,
-          Tit-for-Tat domine largement sur le long terme avec les règles actuelles !
+          {d.explanationP1Start} <strong>{d.explanationCooperers}</strong>
+          {d.explanationP1Mid} <strong>{d.explanationBetrayer}</strong> {d.explanationP1End}{' '}
+          <strong>{d.explanationTFT}</strong>{d.explanationP1Conclusion}
         </p>
 
         <p>
-          Mais ces résultats dépendent de nos règles : <strong>{manchesParMatch} tours par match</strong>.
-          Est-ce que Tit-for-Tat gagne toujours avec 7 tours ? 5 tours ? 3 tours ?
+          {d.explanationP2Start} <strong>{manchesParMatch} {d.explanationRounds}</strong>.
+          {d.explanationP2End}
         </p>
 
         <div className="encart-info">
           <p style={{ margin: 0 }}>
-            <strong>Expérimentez !</strong> Modifiez le nombre de tours avec le curseur à gauche,
-            puis lancez la simulation pour observer ce qui se passe.
+            <strong>{d.experimentTitle}</strong> {d.experimentDesc}
           </p>
         </div>
 
         <p>
-          Vous découvrirez que <strong>si vous ne jouez pas assez de tours (5 ou moins),
-          le Traître domine complètement</strong>. Pourquoi ? Sans interactions répétées,
-          il n'y a pas de temps pour construire la confiance.
+          {d.explanationP3Start} <strong>{d.explanationP3Strong}</strong>{d.explanationP3End}
         </p>
 
-        <h3>L'importance des interactions répétées</h3>
+        <h3>{d.explanationRepTitle}</h3>
         <p>
-          En 1985, quand on demandait aux Américains combien d'amis proches ils avaient,
-          la réponse la plus courante était "trois". En 2004, c'était "zéro".
-          <strong> Moins il y a d'interactions répétées, plus la méfiance se répand.</strong>
+          {d.explanationRepText}
+          <strong>{d.explanationRepStrong}</strong>
         </p>
 
-        <h3>Aller plus loin</h3>
-        <p>
-          Vous voulez explorer d'autres paramètres comme les gains (payoffs) et voir comment
-          ils influencent l'évolution de la confiance ?
-        </p>
+        <h3>{d.explanationFurtherTitle}</h3>
+        <p>{d.explanationFurtherText}</p>
         <p>
           <Link to="/dilemme/sandbox" className="btn">
-            🧪 Découvrir le mode Sandbox
+            {d.sandboxBtn2}
           </Link>
         </p>
       </section>
