@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './YouTube.css';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -8,7 +9,8 @@ export default function YouTube() {
   const [shorts, setShorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentShortsPage, setCurrentShortsPage] = useState(0);
-  
+  const { t, lang } = useLanguage();
+
   const SHORTS_PER_PAGE = 6;
 
   useEffect(() => {
@@ -23,12 +25,11 @@ export default function YouTube() {
     try {
       const response = await fetch(`${API_URL}/youtube-videos`);
       const data = await response.json();
-      
-      // Séparer les shorts des vidéos longues
+
       const isShort = (v) => v.is_short === 1 || v.is_short === true || v.category === 'short' || v.category === 'shorts';
       const longVideos = data.filter(v => !isShort(v));
-      const shortVideos = data.filter(v => isShort(v)).reverse(); // Inverser pour afficher les plus récents en premier
-      
+      const shortVideos = data.filter(v => isShort(v)).reverse();
+
       setVideos(longVideos);
       setShorts(shortVideos);
     } catch (error) {
@@ -38,13 +39,6 @@ export default function YouTube() {
     }
   };
 
-  const formatNumber = (num) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(0) + 'k';
-    return num;
-  };
-
-  // Calculer les pages
   const totalPages = Math.ceil(shorts.length / SHORTS_PER_PAGE);
   const startIndex = currentShortsPage * SHORTS_PER_PAGE;
   const endIndex = startIndex + SHORTS_PER_PAGE;
@@ -62,11 +56,13 @@ export default function YouTube() {
     }
   };
 
+  const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+
   if (loading) {
     return (
       <div className="youtube-page">
         <div className="container">
-          <div className="loading">Chargement des vidéos...</div>
+          <div className="loading">{t.youtube.loading}</div>
         </div>
       </div>
     );
@@ -83,33 +79,33 @@ export default function YouTube() {
               </svg>
             </div>
             <div className="channel-info">
-              <h1>Kizame</h1>
-              <p className="channel-handle">@Kizame1</p>
-              <a 
-                href="https://www.youtube.com/@Kizame1" 
-                target="_blank" 
+              <h1>HACKEYE.xp</h1>
+              <p className="channel-handle">@hackeye_xp</p>
+              <a
+                href="https://www.youtube.com/@hackeye_xp"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="subscribe-btn"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                 </svg>
-                S'abonner
+                {t.youtube.subscribe}
               </a>
             </div>
           </div>
           <p className="channel-description animate-fade-in">
-            Essais vidéo sur l'IA, les fake news, l'art, le gaming et la technologie • Montage • Graphisme
+            {t.youtube.channelDesc}
           </p>
         </div>
       </section>
 
       <section className="videos-content section">
         <div className="container">
-          <h2 className="section-title">Vidéos</h2>
+          <h2 className="section-title">{t.youtube.videos}</h2>
           <div className="videos-grid">
             {videos.map((video, index) => (
-              <a 
+              <a
                 key={video.id}
                 href={video.video_url}
                 target="_blank"
@@ -118,7 +114,7 @@ export default function YouTube() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="video-thumbnail">
-                  <img 
+                  <img
                     src={video.thumbnail || video.youtube_thumbnail || `https://img.youtube.com/vi/${video.video_id}/maxresdefault.jpg`}
                     alt={video.title}
                     onError={(e) => {
@@ -131,18 +127,18 @@ export default function YouTube() {
                     </svg>
                   </div>
                   {video.featured && (
-                    <div className="featured-badge">⭐ Mise en avant</div>
+                    <div className="featured-badge">{t.youtube.featured}</div>
                   )}
                 </div>
 
                 <div className="video-details">
-                  <h3>{video.title}</h3>
-                  <p className="video-description">{video.description}</p>
-                  
+                  <h3>{lang === 'en' && video.title_en ? video.title_en : video.title}</h3>
+                  <p className="video-description">{lang === 'en' && video.description_en ? video.description_en : video.description}</p>
+
                   <div className="video-stats">
                     {video.published_at && (
                       <span className="video-date">
-                        {new Date(video.published_at).toLocaleDateString('fr-FR', { 
+                        {new Date(video.published_at).toLocaleDateString(locale, {
                           day: 'numeric',
                           month: 'short',
                           year: 'numeric'
@@ -165,7 +161,7 @@ export default function YouTube() {
 
           {videos.length === 0 && (
             <div className="no-videos">
-              <p>Aucune vidéo disponible pour le moment.</p>
+              <p>{t.youtube.noVideos}</p>
             </div>
           )}
         </div>
@@ -179,22 +175,22 @@ export default function YouTube() {
             </h2>
             {totalPages > 1 && (
               <div className="shorts-pagination">
-                <button 
-                  className="pagination-btn" 
+                <button
+                  className="pagination-btn"
                   onClick={prevShortsPage}
                   disabled={currentShortsPage === 0}
                 >
-                  ◀ Précédent
+                  {t.youtube.previous}
                 </button>
                 <span className="pagination-info">
                   {currentShortsPage + 1} / {totalPages}
                 </span>
-                <button 
-                  className="pagination-btn" 
+                <button
+                  className="pagination-btn"
                   onClick={nextShortsPage}
                   disabled={currentShortsPage === totalPages - 1}
                 >
-                  Suivant ▶
+                  {t.youtube.next}
                 </button>
               </div>
             )}
@@ -203,17 +199,17 @@ export default function YouTube() {
             <div className="shorts-track">
               {currentShorts.map((short) => {
                 return (
-                  <a 
-                    key={short.id} 
+                  <a
+                    key={short.id}
                     href={short.video_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="short-card"
                   >
                     <div className="short-thumbnail">
-                      <img 
-                        src={short.thumbnail || `https://img.youtube.com/vi/${short.video_id}/maxresdefault.jpg`} 
-                        alt={short.title} 
+                      <img
+                        src={short.thumbnail || `https://img.youtube.com/vi/${short.video_id}/maxresdefault.jpg`}
+                        alt={short.title}
                         onError={(e) => {
                           e.target.src = `https://img.youtube.com/vi/${short.video_id}/hqdefault.jpg`;
                         }}
@@ -238,22 +234,22 @@ export default function YouTube() {
 
       <section className="skills-showcase section">
         <div className="container">
-          <h2 className="section-title">Compétences Vidéo & Design</h2>
+          <h2 className="section-title">{t.youtube.skillsTitle}</h2>
           <div className="skills-grid">
             <div className="skill-card">
               <div className="skill-icon">🎬</div>
-              <h3>Montage Vidéo</h3>
-              <p>Adobe Premiere Pro, After Effects</p>
+              <h3>{t.youtube.editing}</h3>
+              <p>{t.youtube.editingDesc}</p>
             </div>
             <div className="skill-card">
               <div className="skill-icon">🎨</div>
-              <h3>Graphisme</h3>
-              <p>Photoshop, Canva, Design de miniatures YouTube</p>
+              <h3>{t.youtube.graphic}</h3>
+              <p>{t.youtube.graphicDesc}</p>
             </div>
             <div className="skill-card">
               <div className="skill-icon">✍️</div>
-              <h3>Écriture</h3>
-              <p>Essais vidéo, storytelling, scripts créatifs</p>
+              <h3>{t.youtube.writing}</h3>
+              <p>{t.youtube.writingDesc}</p>
             </div>
           </div>
         </div>

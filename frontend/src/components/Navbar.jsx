@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext.jsx";
 import './Navbar.css';
 
 const navLinkClass = ({ isActive }) =>
@@ -8,6 +9,8 @@ const navLinkClass = ({ isActive }) =>
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { lang, setLang, t } = useLanguage();
+
   const isYouTubePage = location.pathname === '/youtube';
   const isProjectsPage = location.pathname === '/projects' || location.pathname.startsWith('/projects/');
   const isGamesPage = location.pathname === '/games';
@@ -25,8 +28,8 @@ export default function Navbar() {
           <span className="brand-separator">•</span>
           <span className="brand-title">Portfolio</span>
         </Link>
-        
-        <button 
+
+        <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
@@ -35,49 +38,67 @@ export default function Navbar() {
         </button>
 
         <div className={`nav-links ${mobileMenuOpen ? 'nav-links-open' : ''}`}>
-          <NavLink 
-            to="/" 
-            className={navLinkClass} 
-            end 
+          <NavLink
+            to="/"
+            className={navLinkClass}
+            end
             onClick={() => setMobileMenuOpen(false)}
           >
-            Accueil
+            {t.nav.home}
           </NavLink>
-          <NavLink 
-            to="/about" 
+          <NavLink
+            to="/about"
             className={navLinkClass}
             onClick={() => setMobileMenuOpen(false)}
           >
-            💼 CV
+            {t.nav.cv}
           </NavLink>
-          <NavLink 
-            to="/projects" 
+          <NavLink
+            to="/projects"
             className={navLinkClass}
             onClick={() => setMobileMenuOpen(false)}
           >
-            Projets
+            {t.nav.projects}
           </NavLink>
-          <NavLink 
-            to="/games" 
+          <NavLink
+            to="/games"
             className={navLinkClass}
             onClick={() => setMobileMenuOpen(false)}
           >
-            🎮 Jeux
+            {t.nav.games}
           </NavLink>
-          <NavLink 
-            to="/youtube" 
+          <NavLink
+            to="/youtube"
             className={navLinkClass}
             onClick={() => setMobileMenuOpen(false)}
           >
-            📺 YouTube
+            {t.nav.youtube}
           </NavLink>
-          <NavLink 
-            to="/contact" 
+          <NavLink
+            to="/contact"
             className={navLinkClass}
             onClick={() => setMobileMenuOpen(false)}
           >
-            ✉️ Contact
+            {t.nav.contact}
           </NavLink>
+
+          <div className="lang-switcher">
+            <button
+              className={`lang-btn ${lang === 'fr' ? 'lang-btn-active' : ''}`}
+              onClick={() => { setLang('fr'); setMobileMenuOpen(false); }}
+              aria-label="Français"
+            >
+              FR
+            </button>
+            <span className="lang-divider">|</span>
+            <button
+              className={`lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}`}
+              onClick={() => { setLang('en'); setMobileMenuOpen(false); }}
+              aria-label="English"
+            >
+              EN
+            </button>
+          </div>
         </div>
       </nav>
     </header>

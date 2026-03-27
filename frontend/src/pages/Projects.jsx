@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Projects.css';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -8,6 +9,7 @@ export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     const savedPosition = sessionStorage.getItem('projectsScrollPosition');
@@ -30,7 +32,7 @@ export default function Projects() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('Projects data:', data); // Debug
+      console.log('Projects data:', data);
       setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -39,17 +41,23 @@ export default function Projects() {
     }
   };
 
-  const filteredProjects = filter === 'all' 
-    ? projects 
+  const filteredProjects = filter === 'all'
+    ? projects
     : projects.filter(p => p.category === filter);
 
   const categories = ['all', ...new Set(projects.map(p => p.category))];
+
+  const statusLabel = (status) => {
+    if (status === 'completed') return t.projects.statusCompleted;
+    if (status === 'in-progress') return t.projects.statusInProgress;
+    return t.projects.statusArchived;
+  };
 
   if (loading) {
     return (
       <div className="projects-page">
         <div className="container">
-          <div className="loading">Chargement des projets...</div>
+          <div className="loading">{t.projects.loading}</div>
         </div>
       </div>
     );
@@ -60,10 +68,10 @@ export default function Projects() {
       <section className="projects-hero">
         <div className="container">
           <h1 className="animate-fade-in">
-            Mes <span className="gradient-text">Projets</span>
+            {t.projects.title} <span className="gradient-text">{t.projects.titleHighlight}</span>
           </h1>
           <p className="hero-subtitle animate-fade-in">
-            Découvrez mes réalisations en développement web, logiciel et programmation système
+            {t.projects.subtitle}
           </p>
         </div>
       </section>
@@ -77,39 +85,37 @@ export default function Projects() {
                 className={`filter-btn ${filter === cat ? 'active' : ''}`}
                 onClick={() => setFilter(cat)}
               >
-                {cat === 'all' ? 'Tous' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {cat === 'all' ? t.projects.filterAll : cat.charAt(0).toUpperCase() + cat.slice(1)}
               </button>
             ))}
           </div>
 
           <div className="projects-grid">
             {filteredProjects.map((project, index) => (
-              <div 
-                key={project.id} 
+              <div
+                key={project.id}
                 className="project-card animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {project.video_url && (
                   <div className="project-video">
-                    <video 
-                      controls 
+                    <video
+                      controls
                       preload="metadata"
                       playsInline
                       poster={project.thumbnail ? `${API_URL.replace('/api', '')}/${project.thumbnail}` : undefined}
                       className="project-video-player"
                       onLoadedMetadata={(e) => {
-                        // Force la génération de la miniature
                         e.target.currentTime = 1;
                       }}
                     >
                       <source src={`${API_URL.replace('/api', '')}/${project.video_url}#t=1`} type="video/mp4" />
-                      Votre navigateur ne supporte pas la lecture vidéo.
+                      {t.projects.videoUnsupported}
                     </video>
                     <div className="project-overlay">
                       <span className="project-category">{project.category}</span>
                       <span className={`project-status status-${project.status}`}>
-                        {project.status === 'completed' ? 'Terminé' : 
-                         project.status === 'in-progress' ? 'En cours' : 'Archivé'}
+                        {statusLabel(project.status)}
                       </span>
                     </div>
                   </div>
@@ -121,17 +127,16 @@ export default function Projects() {
                     <div className="project-overlay">
                       <span className="project-category">{project.category}</span>
                       <span className={`project-status status-${project.status}`}>
-                        {project.status === 'completed' ? 'Terminé' : 
-                         project.status === 'in-progress' ? 'En cours' : 'Archivé'}
+                        {statusLabel(project.status)}
                       </span>
                     </div>
                   </div>
                 )}
-                
+
                 <div className="project-content">
-                  <h3>{project.title}</h3>
-                  <p className="project-description">{project.description}</p>
-                  
+                  <h3>{lang === 'en' && project.title_en ? project.title_en : project.title}</h3>
+                  <p className="project-description">{lang === 'en' && project.description_en ? project.description_en : project.description}</p>
+
                   {project.stack && (() => {
                     const stack = typeof project.stack === 'string' ? JSON.parse(project.stack) : project.stack;
                     return stack.length > 0 && (
@@ -145,39 +150,38 @@ export default function Projects() {
 
                   {project.role && (
                     <p className="project-role">
-                      <strong>Rôle :</strong> {project.role}
-                      {project.team_size && ` • Équipe de ${project.team_size}`}
+                      <strong>{t.projects.role}</strong> {project.role}
+                      {project.team_size && ` • ${t.projects.teamOf} ${project.team_size}`}
                     </p>
                   )}
 
                   <div className="project-links">
-                    {/* Pour le Dilemme du Prisonnier (ID 10), afficher uniquement le bouton démo */}
                     {project.id !== 10 && (
-                      <Link 
-                        to={`/projects/${project.id}`} 
+                      <Link
+                        to={`/projects/${project.id}`}
                         className="btn-learn-more"
                         onClick={() => {
                           sessionStorage.setItem('projectsScrollPosition', window.scrollY.toString());
                         }}
                       >
-                        En savoir plus
+                        {t.projects.learnMore}
                       </Link>
                     )}
                     {project.id === 10 ? (
-                      <Link 
-                        to="/dilemme" 
+                      <Link
+                        to="/dilemme"
                         className="btn-demo btn-demo-full"
                       >
-                        Démo
+                        {t.projects.demo}
                       </Link>
                     ) : project.demo_url ? (
-                      <a 
-                        href={project.demo_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href={project.demo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="btn-demo"
                       >
-                        Démo
+                        {t.projects.demo}
                       </a>
                     ) : null}
                     {project.repository_url && (
@@ -193,7 +197,7 @@ export default function Projects() {
 
           {filteredProjects.length === 0 && (
             <div className="no-results">
-              <p>Aucun projet trouvé dans cette catégorie.</p>
+              <p>{t.projects.noResults}</p>
             </div>
           )}
         </div>

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import './Games.css';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function Games() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -19,7 +21,6 @@ export default function Games() {
     try {
       const response = await fetch(`${API_URL}/games`);
       const data = await response.json();
-      // Inverser l'ordre : Angry Birds (3) -> Plateforme (2) -> Clicker (1)
       setGames(data.reverse());
     } catch (error) {
       console.error('Error fetching games:', error);
@@ -28,11 +29,13 @@ export default function Games() {
     }
   };
 
+  const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+
   if (loading) {
     return (
       <div className="games-page">
         <div className="container">
-          <div className="loading">Chargement des jeux...</div>
+          <div className="loading">{t.games.loading}</div>
         </div>
       </div>
     );
@@ -43,10 +46,10 @@ export default function Games() {
       <section className="games-hero">
         <div className="container">
           <h1 className="animate-fade-in">
-            Mes <span className="gradient-text">Jeux</span>
+            {t.games.title} <span className="gradient-text">{t.games.titleHighlight}</span>
           </h1>
           <p className="hero-subtitle animate-fade-in">
-            Exploration ludique : développement de jeux vidéo et game design
+            {t.games.subtitle}
           </p>
         </div>
       </section>
@@ -55,14 +58,14 @@ export default function Games() {
         <div className="container">
           <div className="games-grid">
             {games.map((game, index) => (
-              <div 
-                key={game.id} 
+              <div
+                key={game.id}
                 className="game-card animate-fade-in"
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
                 <div className="game-image">
-                  <img 
-                    src={`${API_URL.replace('/api', '')}/${game.thumbnail}`} 
+                  <img
+                    src={`${API_URL.replace('/api', '')}/${game.thumbnail}`}
                     alt={game.title}
                     onError={(e) => {
                       e.target.src = 'https://via.placeholder.com/400x300?text=Game+Image';
@@ -72,17 +75,17 @@ export default function Games() {
                 </div>
 
                 <div className="game-content">
-                  <h3>{game.title}</h3>
+                  <h3>{lang === 'en' && game.title_en ? game.title_en : game.title}</h3>
                   <p className="game-tech">
-                    <strong>Technologie :</strong> {game.technology}
+                    <strong>{t.games.technology}</strong> {game.technology}
                   </p>
-                  <p className="game-description">{game.description}</p>
+                  <p className="game-description">{lang === 'en' && game.description_en ? game.description_en : game.description}</p>
 
                   {game.release_date && (
                     <p className="game-date">
-                      Sortie : {new Date(game.release_date).toLocaleDateString('fr-FR', { 
-                        year: 'numeric', 
-                        month: 'long' 
+                      {t.games.released} {new Date(game.release_date).toLocaleDateString(locale, {
+                        year: 'numeric',
+                        month: 'long'
                       })}
                     </p>
                   )}
@@ -90,17 +93,17 @@ export default function Games() {
                   <div className="game-actions">
                     {game.play_url && (
                       <a href={game.play_url} target="_blank" rel="noopener noreferrer" className="btn-play">
-                        🎮 Jouer
+                        {t.games.play}
                       </a>
                     )}
                     {game.video_url && (
                       <a href={game.video_url} target="_blank" rel="noopener noreferrer" className="btn-video">
-                        🎬 Vidéo
+                        {t.games.video}
                       </a>
                     )}
                     {game.repository_url && (
                       <a href={game.repository_url} target="_blank" rel="noopener noreferrer" className="btn-code">
-                        💻 Code
+                        {t.games.code}
                       </a>
                     )}
                   </div>
@@ -111,7 +114,7 @@ export default function Games() {
 
           {games.length === 0 && (
             <div className="no-games">
-              <p>Aucun jeu disponible pour le moment.</p>
+              <p>{t.games.noGames}</p>
             </div>
           )}
         </div>

@@ -237,6 +237,66 @@
   font-weight: 700;
 }
 
+/* Language switcher */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+
+.lang-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 154, 139, 0.15);
+}
+
+.lang-btn-active {
+  color: var(--text-primary);
+  background: rgba(255, 154, 139, 0.2);
+  border: 1px solid rgba(255, 154, 139, 0.5) !important;
+}
+
+.lang-divider {
+  color: rgba(150, 150, 150, 0.5);
+  font-size: 0.8rem;
+  user-select: none;
+}
+
+.site-header-youtube .lang-btn {
+  color: #E0E0E0;
+}
+.site-header-youtube .lang-btn:hover,
+.site-header-youtube .lang-btn-active {
+  color: #FF1744;
+  background: rgba(229, 9, 20, 0.15);
+  border-color: rgba(229, 9, 20, 0.5) !important;
+}
+
+.site-header-games .lang-btn {
+  color: #E0E0E0;
+}
+.site-header-games .lang-btn:hover,
+.site-header-games .lang-btn-active {
+  color: #0070F3;
+  background: rgba(0, 112, 243, 0.15);
+  border-color: rgba(0, 112, 243, 0.5) !important;
+}
+
 @media (max-width: 768px) {
   .mobile-menu-btn {
     display: block;

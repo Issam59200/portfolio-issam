@@ -295,12 +295,13 @@
 
 .hero-description {
   max-width: 600px;
-  margin-bottom: var(--spacing-xl);
+  margin: 0 auto var(--spacing-xl);
   font-size: 1.2rem;
   line-height: 1.9;
   color: var(--text-primary);
   font-weight: 500;
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+  text-align: center;
 }
 
 .tech-highlight {
