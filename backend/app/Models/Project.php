@@ -11,7 +11,17 @@ class Project extends Model
 
     protected $fillable = [
         'title',
+        'title_en',
         'description',
+        'description_en',
+        'detailed_description',
+        'detailed_description_en',
+        'objectives',
+        'objectives_en',
+        'challenges',
+        'challenges_en',
+        'achievements',
+        'achievements_en',
         'stack',
         'link',
         'github',
@@ -29,6 +39,9 @@ class Project extends Model
         'end_date',
         'team_size',
         'role',
+        'role_en',
+        'technologies_details',
+        'technologies_details_en',
     ];
 
     protected $casts = [

@@ -10,7 +10,9 @@ class YouTubeVideo extends Model
 
     protected $fillable = [
         'title',
+        'title_en',
         'description',
+        'description_en',
         'video_id',
         'video_url',
         'thumbnail',
